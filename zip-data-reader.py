@@ -75,21 +75,40 @@ def get_percentages(records):
         scores.append(s)
         
     return scores
-        
-def make_cover_page(records, document):
+
+def make_meta_data(records, document):
     '''
-    Creates cover page with summary statistics.
+    asdf
     '''
 
     r = records[0]
-    title = r['QuizName']
     date_created = r['QuizCreated']
     date_exported = r['DataExported']
-    num_scores = len(records)
-    possible_points = r['PossiblePts']
 
+    p = document.add_paragraph()
+    p.add_run("Date Created: ").bold = True
+    p.add_run(date_created + "\n")
+    p.add_run("Date Exported: ").bold = True
+    p.add_run(date_exported)
+
+def make_summary_statistics(records, document):
+    '''
+    asdf
+    '''
+    r = records[0]
+    possible_points = records[0]['PossiblePts']
+    num_scores = len(records)
+    
     scores = get_raw_scores(records)
     percentages = get_percentages(records)
+
+    document.add_heading('Summary Statistics', 1)
+
+    p = document.add_paragraph()
+    p.add_run("Number of Scores: ").bold = True
+    p.add_run(str(num_scores) + "\n")
+    p.add_run("Points Possible: ").bold = True
+    p.add_run(str(possible_points))
 
     mean_raw = statistics.mean(scores)
     max_raw = max(scores)
@@ -99,39 +118,83 @@ def make_cover_page(records, document):
     max_percent = max(percentages)
     min_percent = min(percentages)
     
+    p = document.add_paragraph()
+    p.add_run("Mean (raw/percent): ").bold = True
+    p.add_run(str(mean_raw) + " / " + str(mean_percent) + "%\n")
+    p.add_run("Max (raw/percent): ").bold = True
+    p.add_run(str(max_raw) + " / " + str(max_percent) + "%\n")
+    p.add_run("Min (raw/percent): ").bold = True
+    p.add_run(str(min_raw) + " / " + str(min_percent) + "%")
+    
+def make_difficulty_analysis(records, document, hard_threshold, easy_threshold):
+    '''
+    Generates a list of questions ranked from most to least difficult
+    based on the number of students that miss each question.
+    '''
+    r = records[0]
+    num_questions = int(r['PossiblePts'])
+    
+    if 'Key100' in r:
+        sheet_size = 100
+    elif 'Key50' in r:
+        sheet_size = 50
+    else:
+        sheet_size = 25
+
+    misses = {}
+
+    for r in records:
+        for i in range(1, sheet_size + 1):
+            correct = r['Key' + str(i)]
+            answer = r['Stu' + str(i)]
+            
+            if len(correct) > 0:
+                if i not in misses:
+                    misses[i] = 0
+                    
+                if answer != correct:
+                    misses[i] += 1
+
+    difficulty = []
+    for k, v in misses.items():
+        p = round(v / num_questions * 100, 1)
+        difficulty.append((k, v, p))
+
+    sort_by = lambda k: k[1]
+    difficulty = sorted(difficulty, key=sort_by , reverse=True)
+
+    document.add_heading('Difficulty Analysis', 1)
+
+    paragraph = document.add_paragraph("Most difficult Questions (more than " + str(hard_threshold) + "% missed)\n")
+    for d in difficulty:
+        if (d[2] >= hard_threshold):
+            q = str(d[0])
+            n = str(d[1])
+            p = str(d[2])
+            paragraph.add_run("\tquestion=" + q + ", times missed=" + n + ", percent missed=" + p + "\n")
+
+    paragraph = document.add_paragraph("Easiest Questions (less than " + str(easy_threshold) + "% missed)\n")
+    for d in difficulty:
+        if (d[2] <= easy_threshold):
+            q = str(d[0])
+            n = str(d[1])
+            p = str(d[2])
+            paragraph.add_run("\tquestion=" + q + ", times missed=" + n + ", percent missed=" + p + "\n")
+                               
+def make_cover_page(records, document):
+    '''
+    Creates cover page with summary statistics.
+    '''
+    r = records[0]
+    title = r['QuizName']
+
     document.add_heading('ZipGrade Score Report', 0)
     document.add_heading(title, 1)
-
-    p = document.add_paragraph()
-    p.add_run("Date Created: ").bold = True
-    p.add_run(date_created + "\n")
-    p.add_run("Date Exported: ").bold = True
-    p.add_run(date_exported)
     
-    document.add_heading('Summary Statistics', 1)
-
-    p = document.add_paragraph()
-    p.add_run("Number of Scores: ").bold = True
-    p.add_run(str(num_scores) + "\n")
-    p.add_run("Points Possible: ").bold = True
-    p.add_run(str(possible_points))
-
-    p = document.add_paragraph()
-    p.add_run("Mean (raw): ").bold = True
-    p.add_run(str(max_raw) + "\n")
-    p.add_run("Max (raw): ").bold = True
-    p.add_run(str(min_raw) + "\n")
-    p.add_run("Min (raw): ").bold = True
-    p.add_run(str(min_raw))
-
-    p = document.add_paragraph()
-    p.add_run("Mean (%): ").bold = True
-    p.add_run(str(mean_percent) + "\n")
-    p.add_run("Max(%): ").bold = True
-    p.add_run(str(max_percent) + "\n")
-    p.add_run("Min (%): ").bold = True
-    p.add_run(str(min_percent))
-   
+    make_meta_data(records, document)
+    make_summary_statistics(records, document)
+    make_difficulty_analysis(records, document, 10, 2)
+    
     document.add_page_break()
 
 def make_score_summary(records, document):
