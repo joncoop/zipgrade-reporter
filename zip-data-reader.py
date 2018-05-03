@@ -2,44 +2,168 @@ import json
 import statistics
 import docx
 
-csv_data = "apcsa2014practiceexamExport.csv"
-
-with open(csv_data, 'r') as f:
-    contents = f.read().splitlines()
-
-fields = contents[0].split(',')
-
-records = []
-
-for line in contents[1:]:
-    r = {}
-    values = line.split(',')
+def get_import_path():
+    '''
+    Gets path to ZipGrade data file.
     
-    for field, value in zip(fields, values):
-        r[field] = value
+    Right now it's hard coded, but this could be obtained from GUI later.
+    '''
 
-    records.append(r)
+    return "apcsa2014practiceexamExport.csv"
 
-pretty = json.dumps(records, indent=4, sort_keys=False)
-print(pretty)
+def get_export_path():
+    '''
+    Gets path to save report.
+    
+    Right now it's hard coded as an empty string so the report will be
+    saved in the same file as the program is run.
+    '''
 
-# now put it in word
-document = docx.Document()
-document.add_heading('Score Report', 0)
+    return ""
 
-for r in records:
+def get_export_filename():
+    '''
+    Gets path to save report.
+    
+    Right now it's hard coded, but this could be obtained from GUI later.
+    '''
+
+    return "sample_report.docx"
+
+def csv_to_json(path):
+    '''
+    Reads ZipGrade csv export file and stores as JSON data
+    '''
+    
+    with open(path, 'r') as f:
+        contents = f.read().splitlines()
+
+    fields = contents[0].split(',')
+
+    records = []
+
+    for line in contents[1:]:
+        r = {}
+        values = line.split(',')
+        
+        for field, value in zip(fields, values):
+            r[field] = value
+
+        records.append(r)
+
+    pretty = json.dumps(records, indent=4, sort_keys=False)
+    #print(pretty)
+
+    records = sorted(records, key=lambda k: k['LastName'] + " " + k['FirstName'] , reverse=False)
+    
+    return records
+
+def get_raw_scores(records):
+    scores = []
+
+    for r in records:
+        scores.append(int(r['EarnedPts']))
+        
+    return scores
+        
+def get_percentages(records):
+    scores = []
+
+    for r in records:
+        s = float(r['PercentCorrect'])
+        scores.append(s)
+        
+    return scores
+        
+def make_cover_page(records, document):
+    '''
+    Creates cover page with summary statistics.
+    '''
+
+    r = records[0]
     title = r['QuizName']
-    section = r['QuizClass']
-    last = r['LastName']
-    first = r['FirstName']
-    zip_id = r['ZipGradeID']
-    earned = r['EarnedPts']
-    possible = r['PossiblePts']
-    percent = r['PercentCorrect']
+    date_created = r['QuizCreated']
+    date_exported = r['DataExported']
+    num_scores = len(records)
+    possible_points = r['PossiblePts']
 
-    if 'Key100' in r:
+    scores = get_raw_scores(records)
+    percentages = get_percentages(records)
+
+    mean_raw = statistics.mean(scores)
+    max_raw = max(scores)
+    min_raw = min(scores)
+
+    mean_percent = statistics.mean(percentages)
+    max_percent = max(percentages)
+    min_percent = min(percentages)
+    
+    document.add_heading('ZipGrade Score Report', 0)
+    
+    document.add_heading(title, 1)
+    meta = ""
+    meta += "Date Created: " + date_created + "\n"
+    meta += "Date Exported: " + date_exported
+    document.add_paragraph(meta)
+    
+    document.add_heading('Summary Statistics', 1)
+    stats = ""
+    stats += "Number of Scores: " + str(num_scores) + "\n"
+    stats += "Points Possible: " + str(possible_points)
+    document.add_paragraph(stats)
+
+    stats = ""
+    stats += "Mean (raw): " + str(mean_raw) + "\n"
+    stats += "Max (raw): " + str(max_raw) + "\n"
+    stats += "Min (raw): " + str(min_raw)
+    document.add_paragraph(stats)
+    
+    stats += "Mean (%): " + str(mean_percent) + "\n"
+    stats += "Max (%): " + str(max_percent) + "\n"
+    stats += "Min (%): " + str(min_percent)
+    document.add_paragraph(stats)
+   
+    document.add_page_break()
+
+def make_score_summary(records, document):
+    '''
+    Creates summary of indidual student scores.
+    '''
+
+    document.add_heading('Individual Scores', 1)
+    table = document.add_table(rows=1, cols=4)
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = 'Name'
+    hdr_cells[1].text = 'Raw'
+    hdr_cells[2].text = 'Possible'
+    hdr_cells[3].text = 'Percent'
+
+    for r in records:
+        row_cells = table.add_row().cells
+        row_cells[0].text = r['LastName'] + ", " + r['FirstName']
+        row_cells[1].text = r['EarnedPts']
+        row_cells[2].text = r['PossiblePts']
+        row_cells[3].text = r['PercentCorrect'] + "%"
+        
+    document.add_page_break()
+
+def make_individual_report(record):
+    '''
+    Creates report for a student
+    '''
+    
+    title = record['QuizName']
+    section = record['QuizClass']
+    last = record['LastName']
+    first = record['FirstName']
+    zip_id = record['ZipGradeID']
+    earned = record['EarnedPts']
+    possible = record['PossiblePts']
+    percent = record['PercentCorrect']
+
+    if 'Key100' in record:
         sheet_size = 100
-    elif 'Key50' in r:
+    elif 'Key50' in record:
         sheet_size = 50
     else:
         sheet_size = 25
@@ -48,10 +172,10 @@ for r in records:
     wrong = ""
     num_wrong = 0
     for i in range(1, sheet_size + 1):
-        correct = r['Key' + str(i)]
+        correct = record['Key' + str(i)]
 
         if len(correct) > 0:
-            answer = r['Stu' + str(i)]
+            answer = record['Stu' + str(i)]
 
             if len(answer) == 0:
                 answer = "-"
@@ -70,16 +194,39 @@ for r in records:
             if num_wrong % 5 == 0:
                 wrong += "\n"
         
-    result += "Name: " + last + ", " + first + " (ID=" + zip_id + ")\n"
+    result += "Name: " + last + ", " + first + "\n"
+    result += "ID: " + zip_id + "\n"
     result += "Test: " + title + "\n"
     result += "Class: " + section + "\n"
     result += "Raw: " + earned + "/" + possible + "\n"
-    result += "Percent: " +  percent + "\n"
-    result += "Incorrect responses: (your answer, correct)" + "\n"
+    result += "Percent: " +  percent + "%\n"
+    result += "Response Summary: (Correct)\n"
     result += wrong
     result += "\n\n"
+    
+    return result
+    
+def generate_word_doc(records, save_path):
+    '''
+    Creates Word Doc with individual score reports.
+    '''
 
-    paragraph = document.add_paragraph(result)
-    paragraph.paragraph_format.keep_together = True
+    document = docx.Document()
+    make_cover_page(records, document)
+    make_score_summary(records, document)
+    
+    for r in records:
+        student_report = make_individual_report(r)
+        paragraph = document.add_paragraph(student_report)
+        paragraph.paragraph_format.keep_together = True
 
-document.save('report.docx')
+    document.save(save_path)
+
+# go!
+if __name__ == "__main__":
+    import_path = get_import_path()
+    export_path = get_export_path()
+    export_filename = get_export_filename()
+    
+    data = csv_to_json(import_path)
+    generate_word_doc(data, export_path + export_filename)
