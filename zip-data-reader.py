@@ -86,9 +86,9 @@ def make_meta_data(records, document):
     date_exported = r['DataExported']
 
     p = document.add_paragraph()
-    p.add_run("Date Created: ").bold = True
+    p.add_run("Date Created: ")
     p.add_run(date_created + "\n")
-    p.add_run("Date Exported: ").bold = True
+    p.add_run("Date Exported: ")
     p.add_run(date_exported)
 
 def make_summary_statistics(records, document):
@@ -105,9 +105,9 @@ def make_summary_statistics(records, document):
     document.add_heading('Summary Statistics', 1)
 
     p = document.add_paragraph()
-    p.add_run("Number of Scores: ").bold = True
+    p.add_run("Number of Scores: ")
     p.add_run(str(num_scores) + "\n")
-    p.add_run("Points Possible: ").bold = True
+    p.add_run("Points Possible: ")
     p.add_run(str(possible_points))
 
     mean_raw = statistics.mean(scores)
@@ -119,11 +119,11 @@ def make_summary_statistics(records, document):
     min_percent = min(percentages)
     
     p = document.add_paragraph()
-    p.add_run("Mean (raw/percent): ").bold = True
+    p.add_run("Mean (raw/percent): ")
     p.add_run(str(mean_raw) + " / " + str(mean_percent) + "%\n")
-    p.add_run("Max (raw/percent): ").bold = True
+    p.add_run("Max (raw/percent): ")
     p.add_run(str(max_raw) + " / " + str(max_percent) + "%\n")
-    p.add_run("Min (raw/percent): ").bold = True
+    p.add_run("Min (raw/percent): ")
     p.add_run(str(min_raw) + " / " + str(min_percent) + "%")
     
 def make_difficulty_analysis(records, document, hard_threshold, easy_threshold):
@@ -165,21 +165,21 @@ def make_difficulty_analysis(records, document, hard_threshold, easy_threshold):
 
     document.add_heading('Difficulty Analysis', 1)
 
-    paragraph = document.add_paragraph("Most difficult Questions (more than " + str(hard_threshold) + "% missed)\n")
+    paragraph = document.add_paragraph("Most difficult Questions (at least " + str(hard_threshold) + "% missed)\n")
     for d in difficulty:
         if (d[2] >= hard_threshold):
             q = str(d[0])
             n = str(d[1])
             p = str(d[2])
-            paragraph.add_run("\tquestion=" + q + ", times missed=" + n + ", percent missed=" + p + "\n")
+            paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
 
-    paragraph = document.add_paragraph("Easiest Questions (less than " + str(easy_threshold) + "% missed)\n")
+    paragraph = document.add_paragraph("Easiest Questions (no more than " + str(easy_threshold) + "% missed)\n")
     for d in difficulty:
         if (d[2] <= easy_threshold):
             q = str(d[0])
             n = str(d[1])
             p = str(d[2])
-            paragraph.add_run("\tquestion=" + q + ", times missed=" + n + ", percent missed=" + p + "\n")
+            paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
                                
 def make_cover_page(records, document):
     '''
@@ -221,7 +221,7 @@ def make_score_summary(records, document):
         
     document.add_page_break()
 
-def make_individual_report(record):
+def make_individual_report(record, document):
     '''
     Creates report for a student
     '''
@@ -268,17 +268,18 @@ def make_individual_report(record):
             if num_wrong % 5 == 0:
                 wrong += "\n"
         
-    result += "Name: " + last + ", " + first + "\n"
-    result += "ID: " + zip_id + "\n"
-    result += "Test: " + title + "\n"
-    result += "Class: " + section + "\n"
-    result += "Raw: " + earned + "/" + possible + "\n"
-    result += "Percent: " +  percent + "%\n"
-    result += "Response Summary: (Correct)\n"
-    result += wrong
-    result += "\n\n"
-    
-    return result
+    paragraph = document.add_paragraph()
+    paragraph.paragraph_format.keep_together = True
+        
+    paragraph.add_run(last + ", " + first + "\n\n").bold = True
+    paragraph.add_run("ID: " + zip_id + "\n")
+    paragraph.add_run("Test: " + title + "\n")
+    paragraph.add_run("Class: " + section + "\n")
+    paragraph.add_run("Raw: " + earned + "/" + possible + "\n")
+    paragraph.add_run("Percent: " +  percent + "%\n")
+    paragraph.add_run("Response Summary: (Correct)\n")
+    paragraph.add_run(wrong + "\n")
+    paragraph.add_run("\n")
     
 def generate_word_doc(records, save_path):
     '''
@@ -290,9 +291,7 @@ def generate_word_doc(records, save_path):
     make_score_summary(records, document)
     
     for r in records:
-        student_report = make_individual_report(r)
-        paragraph = document.add_paragraph(student_report)
-        paragraph.paragraph_format.keep_together = True
+        make_individual_report(r, document)
 
     document.save(save_path)
 
