@@ -51,10 +51,11 @@ def csv_to_json(path):
 
         records.append(r)
 
-    pretty = json.dumps(records, indent=4, sort_keys=False)
+    #pretty = json.dumps(records, indent=4, sort_keys=False)
     #print(pretty)
 
-    records = sorted(records, key=lambda k: k['LastName'] + " " + k['FirstName'] , reverse=False)
+    sort_by = lambda k: k['LastName'] + " " + k['FirstName']
+    records = sorted(records, key=sort_by , reverse=False)
     
     return records
 
@@ -99,29 +100,37 @@ def make_cover_page(records, document):
     min_percent = min(percentages)
     
     document.add_heading('ZipGrade Score Report', 0)
-    
     document.add_heading(title, 1)
-    meta = ""
-    meta += "Date Created: " + date_created + "\n"
-    meta += "Date Exported: " + date_exported
-    document.add_paragraph(meta)
+
+    p = document.add_paragraph()
+    p.add_run("Date Created: ").bold = True
+    p.add_run(date_created + "\n")
+    p.add_run("Date Exported: ").bold = True
+    p.add_run(date_exported)
     
     document.add_heading('Summary Statistics', 1)
-    stats = ""
-    stats += "Number of Scores: " + str(num_scores) + "\n"
-    stats += "Points Possible: " + str(possible_points)
-    document.add_paragraph(stats)
 
-    stats = ""
-    stats += "Mean (raw): " + str(mean_raw) + "\n"
-    stats += "Max (raw): " + str(max_raw) + "\n"
-    stats += "Min (raw): " + str(min_raw)
-    document.add_paragraph(stats)
-    
-    stats += "Mean (%): " + str(mean_percent) + "\n"
-    stats += "Max (%): " + str(max_percent) + "\n"
-    stats += "Min (%): " + str(min_percent)
-    document.add_paragraph(stats)
+    p = document.add_paragraph()
+    p.add_run("Number of Scores: ").bold = True
+    p.add_run(str(num_scores) + "\n")
+    p.add_run("Points Possible: ").bold = True
+    p.add_run(str(possible_points))
+
+    p = document.add_paragraph()
+    p.add_run("Mean (raw): ").bold = True
+    p.add_run(str(max_raw) + "\n")
+    p.add_run("Max (raw): ").bold = True
+    p.add_run(str(min_raw) + "\n")
+    p.add_run("Min (raw): ").bold = True
+    p.add_run(str(min_raw))
+
+    p = document.add_paragraph()
+    p.add_run("Mean (%): ").bold = True
+    p.add_run(str(mean_percent) + "\n")
+    p.add_run("Max(%): ").bold = True
+    p.add_run(str(max_percent) + "\n")
+    p.add_run("Min (%): ").bold = True
+    p.add_run(str(min_percent))
    
     document.add_page_break()
 
@@ -132,6 +141,8 @@ def make_score_summary(records, document):
 
     document.add_heading('Individual Scores', 1)
     table = document.add_table(rows=1, cols=4)
+    table.style = 'Medium Shading 1'
+    
     hdr_cells = table.rows[0].cells
     hdr_cells[0].text = 'Name'
     hdr_cells[1].text = 'Raw'
@@ -229,4 +240,5 @@ if __name__ == "__main__":
     export_filename = get_export_filename()
     
     data = csv_to_json(import_path)
-    generate_word_doc(data, export_path + export_filename)
+    save_path = export_path + export_filename
+    generate_word_doc(data, save_path)
