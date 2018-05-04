@@ -9,7 +9,8 @@ def get_import_path():
     Right now it's hard coded, but this could be obtained from GUI later.
     '''
 
-    return "apcsa2014practiceexamExport.csv"
+    return "apcsa2015releasedexamExport.csv"
+    #return "apcsa2014practiceexamExport.csv"
 
 def get_export_path():
     '''
@@ -63,7 +64,7 @@ def get_raw_scores(records):
     scores = []
 
     for r in records:
-        scores.append(int(r['EarnedPts']))
+        scores.append(int(float(r['EarnedPts'])))
         
     return scores
         
@@ -110,11 +111,11 @@ def make_summary_statistics(records, document):
     p.add_run("Points Possible: ")
     p.add_run(str(possible_points))
 
-    mean_raw = statistics.mean(scores)
+    mean_raw = round(statistics.mean(scores), 2)
     max_raw = max(scores)
     min_raw = min(scores)
 
-    mean_percent = statistics.mean(percentages)
+    mean_percent = round(statistics.mean(percentages), 2)
     max_percent = max(percentages)
     min_percent = min(percentages)
     
@@ -132,7 +133,7 @@ def make_difficulty_analysis(records, document, hard_threshold, easy_threshold):
     based on the number of students that miss each question.
     '''
     r = records[0]
-    num_questions = int(r['PossiblePts'])
+    num_questions = int(float(r['PossiblePts']))
     
     if 'Key100' in r:
         sheet_size = 100
