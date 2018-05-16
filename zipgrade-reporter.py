@@ -5,9 +5,6 @@ import docx
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
-# secret setting
-generate_sample = False
-
 class ZipGradeReporter:
     def __init__(self, master):
         self.import_filename = None
@@ -55,9 +52,6 @@ class ZipGradeReporter:
         
         ZipGrade date format: May 02 2018 02:14 PM
         '''
-
-        if generate_sample:
-            return "sample_report.docx"
         
         months = {"January": "01",
                   "February": "02",
