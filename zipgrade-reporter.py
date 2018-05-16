@@ -72,10 +72,13 @@ class ZipGradeReporter:
         if len(title) == 0:
             title = "grade_report"
 
+        '''
+        # can't make this part of file name, a single report might contain multiple classes
         section = r['QuizClass'].strip()
         if len(section) == 0:
             section = ""
-
+        '''
+        
         date = r['DataExported'].split(" ")
         yyyy = date[2]
         mm = months[date[0]]
@@ -84,7 +87,7 @@ class ZipGradeReporter:
         hh, mm = date[3].split(":")
         period = date[4]
 
-        temp = title + "_" + section + "_" + yyyy + mm + dd
+        temp = title + "_" + "_" + yyyy + mm + dd
         filename = ""
         underscore = True
 
