@@ -385,3 +385,6 @@ class ZipGradeReporter:
 root = Tk()
 my_gui = ZipGradeReporter(root)
 root.mainloop()
+
+
+input("enter to exit")
