@@ -1,13 +1,15 @@
-import json
-import statistics
 import docx
+import json
+import os
+import statistics
 
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 class ZipGradeReporter:
     def __init__(self, master):
-        self.import_filename = None
+        self.import_path = None
+        self.export_path = None
         
         self.master = master
         master.title("ZipGrade Reporter")
@@ -19,7 +21,7 @@ class ZipGradeReporter:
 
         self.entry = Entry(master)
 
-        self.guess_button = Button(master, text="Select file", command=self.set_import_path)
+        self.guess_button = Button(master, text="Select file", command=self.select_file)
         self.reset_button = Button(master, text="Generate Report", command=self.generate)
 
         self.label.grid(row=0, column=0, columnspan=2, sticky=W+E)
@@ -27,23 +29,22 @@ class ZipGradeReporter:
         self.guess_button.grid(row=2, column=0)
         self.reset_button.grid(row=2, column=1)
 
-    def set_import_path(self):
+    def select_file(self):
         '''
-        Gets path to ZipGrade data file.
+        Gets path to ZipGrade data file and sets export path to same directory.
         '''
-        self.import_filename = askopenfilename()
-        self.label_text.set(self.import_filename)
         
-    def get_export_path(self):
-        '''
-        Gets path to save report.
+        self.import_path = askopenfilename()
+        self.export_path = os.path.dirname(self.import_path)
         
-        Right now it's hard coded as an empty string so the report will be
-        saved in the same file as the program is run.
+        self.label_text.set(self.import_path)
+
+    def change_export_path(self):
         '''
-
-        return ""
-
+        Maybe put a button next to the export field so that it can be changed if desired
+        '''
+        pass
+    
     def get_export_filename(self, records):
         '''
         Gets path to save report. The report file name is simply the quiz name
@@ -359,10 +360,9 @@ class ZipGradeReporter:
         '''
         Creates Word Doc with individual score reports.
         '''
-        import_path = self.import_filename
 
-        if import_path != None:
-            records = self.csv_to_json(import_path)
+        if self.import_path != None:
+            records = self.csv_to_json(self.import_path)
 
             document = docx.Document()
             self.make_cover_page(records, document)
@@ -371,9 +371,8 @@ class ZipGradeReporter:
             for r in records:
                 self.make_individual_report(r, document)
 
-            export_path = self.get_export_path()
             export_filename = self.get_export_filename(records)
-            save_path = export_path + export_filename
+            save_path = self.export_path + "/" + export_filename
             
             document.save(save_path)
 
@@ -385,6 +384,3 @@ class ZipGradeReporter:
 root = Tk()
 my_gui = ZipGradeReporter(root)
 root.mainloop()
-
-
-input("enter to exit")
