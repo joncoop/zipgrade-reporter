@@ -3,4 +3,4 @@ title: ZipGrade Reporter
 description: Quickly generate sharable reports
 show_downloads: true
 github:
-  zip_url: downloads/zipgrade-reporter.zip
+  zip_url: https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.1-beta.1/ZipGrade.Reporter.exe
