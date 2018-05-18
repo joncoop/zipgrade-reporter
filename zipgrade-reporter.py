@@ -18,29 +18,28 @@ class ZipGradeReporter:
         self.master.title("ZipGrade Reporter")
         
         select_button = Button(self.master, text="1. Select ZipGrade CSV Data", command=self.select_file)
-        select_button.config(width=25)
+        select_button.config(width=30)
         select_button.grid(row=0, column=0, padx=5, pady=5, sticky=(W))
         
         generate_button = Button(self.master, text="2. Generate Report", command=self.generate)
-        generate_button.config(width=25)
+        generate_button.config(width=30)
         generate_button.grid(row=0, column=1, padx=5, pady=5, sticky=(E))
 
         instr1 = Label(self.master, text="The following data file will be used to generate your report...")
         instr1.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
 
         self.import_lbl_text = StringVar()
+        self.import_lbl_text.set("Waiting for file selection...")
         import_lbl = Label(self.master, textvariable=self.import_lbl_text)
-        import_lbl.grid(row=4, column=0, columnspan=2, padx=15, pady=5, sticky=(W))
+        import_lbl.grid(row=4, column=0, columnspan=2, padx=20, pady=5, sticky=(W))
 
         instr2 = Label(self.master, text="Report will be created in...")
         instr2.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
         
         self.export_lbl_text = StringVar()
+        self.export_lbl_text.set("...")
         export_lbl = Label(self.master, textvariable=self.export_lbl_text)
-        export_lbl.grid(row=6, column=0, columnspan=2, padx=15, pady=5, sticky=(W))
-        
-        status = Label(self.master, text="Report will be created in...")
-        status.grid(row=5, column=0, columnspan=2)
+        export_lbl.grid(row=6, column=0, columnspan=2, padx=20, pady=5, sticky=(W))
         
         self.status_lbl_text = StringVar()
         status_lbl = Label(self.master, textvariable=self.status_lbl_text)
@@ -153,6 +152,9 @@ class ZipGradeReporter:
         return records
 
     def get_raw_scores(self, records):
+        '''
+        Returns a list of raw scores for each student.
+        '''
         scores = []
 
         for r in records:
@@ -162,7 +164,7 @@ class ZipGradeReporter:
             
     def get_percentages(self, records):
         '''
-        asdf
+        Calculates the percent correct for each student.
         '''
 
         scores = []
@@ -175,7 +177,7 @@ class ZipGradeReporter:
 
     def make_meta_data(self, records, document):
         '''
-        asdf
+        Adds meta data to report
         '''
 
         r = records[0]
@@ -190,7 +192,7 @@ class ZipGradeReporter:
 
     def make_summary_statistics(self, records, document):
         '''
-        asdf
+        Adds a section to report with basic summary statistics.
         '''
         
         r = records[0]
@@ -385,23 +387,27 @@ class ZipGradeReporter:
         '''
 
         if self.import_path != None:
-            records = self.csv_to_json(self.import_path)
+            try:
+                records = self.csv_to_json(self.import_path)
 
-            document = docx.Document()
-            self.make_cover_page(records, document)
-            self.make_score_summary(records, document)
-            
-            for r in records:
-                self.make_individual_report(r, document)            
+                document = docx.Document()
+                self.make_cover_page(records, document)
+                self.make_score_summary(records, document)
+                
+                for r in records:
+                    self.make_individual_report(r, document)            
 
-            self.save_path = self.export_path + "/" + self.get_export_filename(records)
-            document.save(self.save_path)
+                self.save_path = self.export_path + "/" + self.get_export_filename(records)
+                document.save(self.save_path)
 
-            self.status_lbl_text.set("Your report is ready.")
+                self.status_lbl_text.set("Your report is ready!")
+            except:
+                self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
         else:
             self.status_lbl_text.set("You must select a file first!")
 
 
 root = Tk()
+#root.iconbitmap('assets/my_icon.ico')
 my_gui = ZipGradeReporter(root)
 root.mainloop()
