@@ -7,7 +7,7 @@ ability to provide feedback to students easily. That's were ZipGrade Reporter ca
 
 ZipGrade Reporter can process the CSV data, generate small printable reports for students, give more detailed item analysis and test statistics, 
 
-Check out a [sample report here](samples/sample-report.docx).
+Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/raw/master/sample/sample_report.docx).
 
 # How to Use
 
