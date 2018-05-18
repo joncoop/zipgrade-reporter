@@ -12,22 +12,39 @@ class ZipGradeReporter:
         self.export_path = None
         
         self.master = master
-        master.title("ZipGrade Reporter")
+        self.gui_init()
 
-        self.message = "Select CSV Report"
-        self.label_text = StringVar()
-        self.label_text.set(self.message)
-        self.label = Label(master, textvariable=self.label_text)
+    def gui_init(self):
+        self.master.title("ZipGrade Reporter")
+        
+        select_button = Button(self.master, text="1. Select ZipGrade CSV Data", command=self.select_file)
+        select_button.config(width=25)
+        select_button.grid(row=0, column=0, padx=5, pady=5, sticky=(W))
+        
+        generate_button = Button(self.master, text="2. Generate Report", command=self.generate)
+        generate_button.config(width=25)
+        generate_button.grid(row=0, column=1, padx=5, pady=5, sticky=(E))
 
-        self.entry = Entry(master)
+        instr1 = Label(self.master, text="The following data file will be used to generate your report...")
+        instr1.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
 
-        self.guess_button = Button(master, text="Select file", command=self.select_file)
-        self.reset_button = Button(master, text="Generate Report", command=self.generate)
+        self.import_lbl_text = StringVar()
+        import_lbl = Label(self.master, textvariable=self.import_lbl_text)
+        import_lbl.grid(row=4, column=0, columnspan=2, padx=15, pady=5, sticky=(W))
 
-        self.label.grid(row=0, column=0, columnspan=2, sticky=W+E)
-        self.entry.grid(row=1, column=0, columnspan=2, sticky=W+E)
-        self.guess_button.grid(row=2, column=0)
-        self.reset_button.grid(row=2, column=1)
+        instr2 = Label(self.master, text="Report will be created in...")
+        instr2.grid(row=5, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
+        
+        self.export_lbl_text = StringVar()
+        export_lbl = Label(self.master, textvariable=self.export_lbl_text)
+        export_lbl.grid(row=6, column=0, columnspan=2, padx=15, pady=5, sticky=(W))
+        
+        status = Label(self.master, text="Report will be created in...")
+        status.grid(row=5, column=0, columnspan=2)
+        
+        self.status_lbl_text = StringVar()
+        status_lbl = Label(self.master, textvariable=self.status_lbl_text)
+        status_lbl.grid(row=7, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
 
     def select_file(self):
         '''
@@ -37,8 +54,9 @@ class ZipGradeReporter:
         self.import_path = askopenfilename()
         self.export_path = os.path.dirname(self.import_path)
         
-        self.label_text.set(self.import_path)
-
+        self.import_lbl_text.set(self.import_path)
+        self.export_lbl_text.set(self.export_path)
+        
     def change_export_path(self):
         '''
         Maybe put a button next to the export field so that it can be changed if desired
@@ -143,6 +161,10 @@ class ZipGradeReporter:
         return scores
             
     def get_percentages(self, records):
+        '''
+        asdf
+        '''
+
         scores = []
 
         for r in records:
@@ -170,6 +192,7 @@ class ZipGradeReporter:
         '''
         asdf
         '''
+        
         r = records[0]
         possible_points = records[0]['PossiblePts']
         num_scores = len(records)
@@ -369,16 +392,14 @@ class ZipGradeReporter:
             self.make_score_summary(records, document)
             
             for r in records:
-                self.make_individual_report(r, document)
+                self.make_individual_report(r, document)            
 
-            export_filename = self.get_export_filename(records)
-            save_path = self.export_path + "/" + export_filename
-            
-            document.save(save_path)
+            self.save_path = self.export_path + "/" + self.get_export_filename(records)
+            document.save(self.save_path)
 
-            print("done")
+            self.status_lbl_text.set("Your report is ready.")
         else:
-            print("select a file first")
+            self.status_lbl_text.set("You must select a file first!")
 
 
 root = Tk()
