@@ -17,8 +17,7 @@ First, get the quiz data from your phone to your computer.
 2. Choose the option "CSV - Full Data Format"
 3. Send the file to your computer (perhaps through email or Google Drive)
 
-
-Once you have the file, run ZipGrade Reporter. The app will ask you to
+Once you have the file, run ZipGrade Reporter.
 
 ![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/screenshots/ready.png)
 
@@ -33,4 +32,4 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Contact
 
-me
+Something not working right? Do you have a feature request? You can ]view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
