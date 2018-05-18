@@ -1,3 +1,4 @@
 theme: jekyll-theme-architect
 title: ZipGrade Reporter
-
+description: Quickly generate sharable reports from ZipGrade data
+show_downloads: true
