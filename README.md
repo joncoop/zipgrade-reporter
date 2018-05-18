@@ -4,6 +4,10 @@
 
 blah
 
+## How to Use
+
+blah
+
 ## Download
 
 link
