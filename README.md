@@ -32,4 +32,4 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Contact
 
-Something not working right? Do you have a feature request? You can ]view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
+Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
