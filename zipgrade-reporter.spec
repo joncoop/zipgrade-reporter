@@ -9,7 +9,9 @@ block_cipher = None
 a = Analysis(['zipgrade-reporter.py'],
              pathex=['C:\\Users\\jccooper\\Desktop\\zip-grade'],
              binaries=[],
-             datas=[(path.join(site_packages,"docx","templates"), "docx/templates")],
+             datas=[
+               (path.join(site_packages,"docx","templates"), "docx/templates")
+             ],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -29,4 +31,4 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=True )
+          console=False )
