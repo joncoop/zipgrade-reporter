@@ -2,10 +2,7 @@
 
 ## About
 
-While [ZipGrade](https://www.zipgrade.com/) is a great tool for quickly grading tests and quizzes, it lacks the
-ability to provide feedback to students easily. That's were ZipGrade Reporter can help out.
-
-ZipGrade Reporter can process the CSV data, generate small printable reports for students, give more detailed item analysis and test statistics, 
+ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade](https://www.zipgrade.com/) and use it to generate small printable reports for students, give more detailed item analysis and test statistics, and ... 
 
 Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/raw/master/sample/sample_report.docx).
 
