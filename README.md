@@ -6,7 +6,7 @@ ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade]
 
 Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/raw/master/sample/sample_report.docx).
 
-# How to Use
+## How to Use
 
 First, get the quiz data from your phone to your computer.
 
