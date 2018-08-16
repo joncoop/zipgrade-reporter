@@ -15,9 +15,9 @@ First, get the quiz data from your phone to your computer.
 
 1. Select Export Data from the quiz menu.
 2. Choose the option "CSV - Full Data Format"
-3. Send the file to your computer (perhaps through email or Google Drive)
-
-Once you have the file, run ZipGrade Reporter.
+3. Send the file to yourself (perhaps through email or Google Drive)
+4. Save the file locally on your computer.
+5. Run ZipGrade Reporter.
 
 ![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/screenshots/ready.png)
 
