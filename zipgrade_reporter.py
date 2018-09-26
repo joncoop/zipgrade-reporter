@@ -71,18 +71,18 @@ class ZipGradeReporter:
         ZipGrade date format: May 02 2018 02:14 PM
         '''
         
-        months = {"January": "01",
-                  "February": "02",
-                  "March": "03",
-                  "April": "04",
+        months = {"Jan": "01",
+                  "Feb": "02",
+                  "Mar": "03",
+                  "Apr": "04",
                   "May": "05",
-                  "June": "06",
-                  "July": "07",
-                  "August": "08",
-                  "September": "09",
-                  "October": "10",
-                  "November": "11",
-                  "December": "12"}
+                  "Jun": "06",
+                  "Jul": "07",
+                  "Aug": "08",
+                  "Sep": "09",
+                  "Oct": "10",
+                  "Nov": "11",
+                  "Dec": "12"}
                   
         r = records[0]
         
@@ -98,12 +98,16 @@ class ZipGradeReporter:
         '''
         
         date = r['DataExported'].split(" ")
+        print(date)
         yyyy = date[2]
         mm = months[date[0]]
         dd = date[1]
+            
+        if int(dd) < 10:
+            dd = "0" + dd
 
-        hh, mm = date[3].split(":")
-        period = date[4]
+        #hr, mi = date[3].split(":")
+        #period = date[4]
 
         temp = title + "_" + "_" + yyyy + mm + dd
         filename = ""
@@ -131,7 +135,6 @@ class ZipGradeReporter:
             contents = f.read().splitlines()
 
         fields = contents[0].split(',')
-
         records = []
 
         for line in contents[1:]:
@@ -139,7 +142,7 @@ class ZipGradeReporter:
             values = line.split(',')
             
             for field, value in zip(fields, values):
-                r[field] = value
+                r[field] = value.replace('"','')
 
             records.append(r)
 
@@ -380,12 +383,24 @@ class ZipGradeReporter:
         paragraph.add_run("Response Summary: (Correct)\n")
         paragraph.add_run(wrong + "\n")
         paragraph.add_run("\n")
-        
+
+    def save(self, document, records):
+        '''
+        Creates Word Doc with individual score reports.
+        '''                            
+        try:
+            self.save_path = self.export_path + "/" + self.get_export_filename(records)
+            document.save(self.save_path)
+            self.status_lbl_text.set("Your report is ready!")
+        except:
+            self.status_lbl_text.set("Unable to save report. Check file and disk permissions.")
+
     def generate(self):
         '''
         Creates Word Doc with individual score reports.
         '''
-
+        generated = False
+        
         if self.import_path != None:
             try:
                 records = self.csv_to_json(self.import_path)
@@ -395,14 +410,14 @@ class ZipGradeReporter:
                 self.make_score_summary(records, document)
                 
                 for r in records:
-                    self.make_individual_report(r, document)            
+                    self.make_individual_report(r, document)
 
-                self.save_path = self.export_path + "/" + self.get_export_filename(records)
-                document.save(self.save_path)
-
-                self.status_lbl_text.set("Your report is ready!")
+                generated = True
             except:
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
+
+            if generated:
+                self.save(document, records)
         else:
             self.status_lbl_text.set("You must select a file first!")
 
