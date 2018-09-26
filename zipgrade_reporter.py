@@ -228,19 +228,18 @@ class ZipGradeReporter:
         p.add_run("Min (raw/percent): ")
         p.add_run(str(min_raw) + " / " + str(min_percent) + "%")
         
-    def make_difficulty_analysis(self, records, document, hard_threshold, easy_threshold):
+    def make_difficulty_analysis(self, records, document):
         '''
         Generates a list of questions ranked from most to least difficult
         based on the number of students that miss each question.
         '''
-        r = records[0]
-        num_questions = int(float(r['PossiblePts']))
 
-        sheet_size = int((len(r) - 12) / 4) # 12 metadata colums, 4 data cells per answer
+        r = records[0]
+        num_questions = int((len(r) - 12) / 4) # 12 metadata colums, 4 data cells per answer
         misses = {}
 
         for r in records:
-            for i in range(1, sheet_size + 1):
+            for i in range(1, num_questions + 1):
                 correct = r['Key' + str(i)]
                 answer = r['Stu' + str(i)]
                 
@@ -254,11 +253,16 @@ class ZipGradeReporter:
         difficulty = []
         for k, v in misses.items():
             p = round(v / num_questions * 100, 1)
+            print(k, v, p)
             difficulty.append((k, v, p))
 
         sort_by = lambda k: k[1]
         difficulty = sorted(difficulty, key=sort_by , reverse=True)
 
+        # better idea to use standard deviations for analysis?
+        hard_threshold = 15
+        easy_threshold = 3
+        
         document.add_heading('Difficulty Analysis', 1)
 
         paragraph = document.add_paragraph("Most difficult Questions (at least " + str(hard_threshold) + "% missed)\n")
@@ -289,7 +293,7 @@ class ZipGradeReporter:
         
         self.make_meta_data(records, document)
         self.make_summary_statistics(records, document)
-        self.make_difficulty_analysis(records, document, 10, 2)
+        self.make_difficulty_analysis(records, document)
         
         document.add_page_break()
 
@@ -331,17 +335,12 @@ class ZipGradeReporter:
         possible = record['PossiblePts']
         percent = record['PercentCorrect']
 
-        if 'Key100' in record:
-            sheet_size = 100
-        elif 'Key50' in record:
-            sheet_size = 50
-        else:
-            sheet_size = 25
+        num_questions = int((len(record) - 12) / 4) # 12 metadata colums, 4 data cells per answer
 
         result = ""
         wrong = ""
         num_wrong = 0
-        for i in range(1, sheet_size + 1):
+        for i in range(1, num_questions + 1):
             correct = record['Key' + str(i)]
 
             if len(correct) > 0:
