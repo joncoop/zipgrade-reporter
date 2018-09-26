@@ -98,7 +98,6 @@ class ZipGradeReporter:
         '''
         
         date = r['DataExported'].split(" ")
-        print(date)
         yyyy = date[2]
         mm = months[date[0]]
         dd = date[1]
@@ -236,14 +235,8 @@ class ZipGradeReporter:
         '''
         r = records[0]
         num_questions = int(float(r['PossiblePts']))
-        
-        if 'Key100' in r:
-            sheet_size = 100
-        elif 'Key50' in r:
-            sheet_size = 50
-        else:
-            sheet_size = 25
 
+        sheet_size = int((len(r) - 12) / 4) # 12 metadata colums, 4 data cells per answer
         misses = {}
 
         for r in records:
