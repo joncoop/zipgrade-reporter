@@ -28,7 +28,7 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Download
 
-[Get v.0.9-beta.2](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.2/ZipGrade.Reporter.exe)
+[Get v.0.9-beta.3](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.3/ZipGrade.Reporter.exe)
 
 ## Contact
 
