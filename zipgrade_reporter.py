@@ -301,9 +301,11 @@ class ZipGradeReporter:
         
         for r in records:
             c = r['QuizClass']
+            
             if c not in classes:
                 classes.append(c)
-                
+
+        classes.sort()
         return classes
     
     def make_score_summary(self, records, document):
@@ -311,9 +313,13 @@ class ZipGradeReporter:
         Creates summary of indidual student scores.
         '''
         classes = self.get_class_list(records)
-
+        
         for c in classes:
-            document.add_heading('Individual Scores for ' + c, 1)
+            if c != '':
+                document.add_heading('Class scores for ' + c, 1)
+            else:
+                document.add_heading('Class scores', 1)
+            
             table = document.add_table(rows=1, cols=4)
             table.style = 'Medium Shading 1'
             
@@ -415,12 +421,24 @@ class ZipGradeReporter:
                 document = docx.Document()
                 self.make_cover_page(records, document)
                 self.make_score_summary(records, document)
+
+                classes = self.get_class_list(records)
                 
-                for r in records:
-                    self.make_individual_report(r, document)
+                for i, c in enumerate(classes):
+                    if c != '':
+                        document.add_heading('Student Reports for ' + c, 1)
+                        document.add_page_break()
+                        
+                    for r in records:
+                        if c == r['QuizClass']:
+                            self.make_individual_report(r, document)
+
+                    if i < len(classes) - 1:
+                        document.add_page_break()
 
                 generated = True
-            except:
+            except Exception as inst:
+                #print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
             if generated:
