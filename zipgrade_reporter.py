@@ -185,12 +185,18 @@ class ZipGradeReporter:
         r = records[0]
         date_created = r['QuizCreated']
         date_exported = r['DataExported']
+        classes = self.get_classes(records)
 
         p = document.add_paragraph()
         p.add_run("Date Created: ")
         p.add_run(date_created + "\n")
         p.add_run("Date Exported: ")
         p.add_run(date_exported)
+
+        p = document.add_paragraph()
+        p.add_run("Classes: " + "\n")
+        for c in classes:
+            p.add_run("  - " + c + "\n")
 
     def make_summary_statistics(self, records, document):
         '''
@@ -204,6 +210,9 @@ class ZipGradeReporter:
         scores = self.get_raw_scores(records)
         percentages = self.get_percentages(records)
 
+        scores.sort()
+        percentages.sort()
+        
         document.add_heading('Summary Statistics', 1)
 
         p = document.add_paragraph()
@@ -213,18 +222,45 @@ class ZipGradeReporter:
         p.add_run(str(possible_points))
 
         mean_raw = round(statistics.mean(scores), 2)
-        max_raw = max(scores)
-        min_raw = min(scores)
+        max_raw = round(max(scores), 2)
+        min_raw = round(min(scores), 2)
+        median_raw = round(statistics.median(scores), 2)
 
         mean_percent = round(statistics.mean(percentages), 2)
-        max_percent = max(percentages)
-        min_percent = min(percentages)
+        median_percent = round(statistics.median(percentages), 2)
+        max_percent = round(max(percentages), 2)
+        min_percent = round(min(percentages), 2)
+
+        st_dev_raw = round(statistics.stdev(scores), 2)
+        st_dev_percent = round(statistics.stdev(percentages), 2)
+        
+        mid1 = len(scores) // 2
+        mid2 = mid1
+        
+        if len(scores) % 2 == 1:
+            mid2 += 1  
+        
+        q1_raw = round(statistics.median(scores[0:mid1]), 2)
+        q1_percent = round(statistics.median(percentages[0:mid1]), 2)
+
+        q3_raw = round(statistics.median(scores[mid2:]), 2)
+        q3_percent = round(statistics.median(percentages[mid2:]), 2)
         
         p = document.add_paragraph()
         p.add_run("Mean (raw/percent): ")
         p.add_run(str(mean_raw) + " / " + str(mean_percent) + "%\n")
+        p.add_run("Standard Deviation (raw/percent): ")
+        p.add_run(str(st_dev_raw) + " / " + str(st_dev_percent) + "%")
+        
+        p = document.add_paragraph()
         p.add_run("Max (raw/percent): ")
         p.add_run(str(max_raw) + " / " + str(max_percent) + "%\n")
+        p.add_run("Q3 (raw/percent): ")
+        p.add_run(str(q3_raw) + " / " + str(q3_percent) + "%\n")
+        p.add_run("Median (raw/percent): ")
+        p.add_run(str(median_raw) + " / " + str(median_percent) + "%\n")
+        p.add_run("Q1 (raw/percent): ")
+        p.add_run(str(q1_raw) + " / " + str(q1_percent) + "%\n")
         p.add_run("Min (raw/percent): ")
         p.add_run(str(min_raw) + " / " + str(min_percent) + "%")
         
@@ -234,51 +270,67 @@ class ZipGradeReporter:
         based on the number of students that miss each question.
         '''
 
-        r = records[0]
-        num_questions = int((len(r) - 12) / 4) # 12 metadata colums, 4 data cells per answer
-        misses = {}
-
-        for r in records:
-            for i in range(1, num_questions + 1):
-                correct = r['Key' + str(i)]
-                answer = r['Stu' + str(i)]
-                
-                if len(correct) > 0:
-                    if i not in misses:
-                        misses[i] = 0
-                        
-                    if answer != correct:
-                        misses[i] += 1
-
-        difficulty = []
-        for k, v in misses.items():
-            p = round(v / num_questions * 100, 1)
-            difficulty.append((k, v, p))
-
-        sort_by = lambda k: k[1]
-        difficulty = sorted(difficulty, key=sort_by , reverse=True)
-
-        # better idea to use standard deviations for analysis?
-        hard_threshold = 15
-        easy_threshold = 3
-        
         document.add_heading('Difficulty Analysis', 1)
+        
+        versions = self.get_versions(records)
 
-        paragraph = document.add_paragraph("Most difficult Questions (at least " + str(hard_threshold) + "% missed)\n")
-        for d in difficulty:
-            if (d[2] >= hard_threshold):
-                q = str(d[0])
-                n = str(d[1])
-                p = str(d[2])
-                paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
+        for v in versions:
+            misses = {}
+            r = records[0]
+            num_questions = int((len(r) - 12) / 4) # 12 metadata colums, 4 data cells per answer
+        
+            if len(versions) > 1:
+                document.add_heading('Key version: ' + v, 2)
+                
+            for r in records:
+                if r['KeyVersion'] == v:
+                    for i in range(1, num_questions + 1):
+                        correct = r['Key' + str(i)]
+                        answer = r['Stu' + str(i)]
+                        
+                        if len(correct) > 0:
+                            if i not in misses:
+                                misses[i] = 0
+                                
+                            if answer != correct:
+                                misses[i] += 1
 
-        paragraph = document.add_paragraph("Easiest Questions (no more than " + str(easy_threshold) + "% missed)\n")
-        for d in difficulty:
-            if (d[2] <= easy_threshold):
-                q = str(d[0])
-                n = str(d[1])
-                p = str(d[2])
-                paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
+            difficulty = []
+            for k, v in misses.items():
+                p = round(v / num_questions * 100, 1)
+                difficulty.append((k, v, p))
+
+            sort_by = lambda k: k[1]
+            difficulty = sorted(difficulty, key=sort_by , reverse=True)
+
+            # better idea to use standard deviations for analysis?
+            if len(difficulty) > 10:
+                hard_threshold = difficulty[4][2]
+                easy_threshold = difficulty[-3][2]
+            
+                paragraph = document.add_paragraph("Most difficult Questions (at least " + str(hard_threshold) + "% missed)\n")
+                for d in difficulty:
+                    if (d[2] >= hard_threshold):
+                        q = str(d[0])
+                        n = str(d[1])
+                        p = str(d[2])
+                        paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
+
+                paragraph = document.add_paragraph("Easiest Questions (no more than " + str(easy_threshold) + "% missed)\n")
+                for d in difficulty:
+                    if (d[2] <= easy_threshold):
+                        q = str(d[0])
+                        n = str(d[1])
+                        p = str(d[2])
+                        paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
+            else:
+                for d in difficulty:
+                    q = str(d[0])
+                    n = str(d[1])
+                    p = str(d[2])
+                    paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
+                    
+        document.add_page_break()
                                    
     def make_cover_page(self, records, document):
         '''
@@ -292,11 +344,11 @@ class ZipGradeReporter:
         
         self.make_meta_data(records, document)
         self.make_summary_statistics(records, document)
-        self.make_difficulty_analysis(records, document)
+        
         
         document.add_page_break()
 
-    def get_class_list(self, records):
+    def get_classes(self, records):
         classes = []
         
         for r in records:
@@ -308,11 +360,23 @@ class ZipGradeReporter:
         classes.sort()
         return classes
     
+    def get_versions(self, records):
+        versions = []
+        
+        for r in records:
+            v = r['KeyVersion']
+            
+            if v not in versions:
+                versions.append(v)
+
+        versions.sort()
+        return versions
+    
     def make_score_summary(self, records, document):
         '''
         Creates summary of indidual student scores.
         '''
-        classes = self.get_class_list(records)
+        classes = self.get_classes(records)
         
         for c in classes:
             if c != '':
@@ -420,9 +484,10 @@ class ZipGradeReporter:
 
                 document = docx.Document()
                 self.make_cover_page(records, document)
+                self.make_difficulty_analysis(records, document)
                 self.make_score_summary(records, document)
-
-                classes = self.get_class_list(records)
+                
+                classes = self.get_classes(records)
                 
                 for i, c in enumerate(classes):
                     if c != '':
@@ -438,7 +503,7 @@ class ZipGradeReporter:
 
                 generated = True
             except Exception as inst:
-                #print(inst)
+                print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
             if generated:
