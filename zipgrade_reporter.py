@@ -253,7 +253,6 @@ class ZipGradeReporter:
         difficulty = []
         for k, v in misses.items():
             p = round(v / num_questions * 100, 1)
-            print(k, v, p)
             difficulty.append((k, v, p))
 
         sort_by = lambda k: k[1]
@@ -297,29 +296,42 @@ class ZipGradeReporter:
         
         document.add_page_break()
 
+    def get_class_list(self, records):
+        classes = []
+        
+        for r in records:
+            c = r['QuizClass']
+            if c not in classes:
+                classes.append(c)
+                
+        return classes
+    
     def make_score_summary(self, records, document):
         '''
         Creates summary of indidual student scores.
         '''
+        classes = self.get_class_list(records)
 
-        document.add_heading('Individual Scores', 1)
-        table = document.add_table(rows=1, cols=4)
-        table.style = 'Medium Shading 1'
-        
-        hdr_cells = table.rows[0].cells
-        hdr_cells[0].text = 'Name'
-        hdr_cells[1].text = 'Raw'
-        hdr_cells[2].text = 'Possible'
-        hdr_cells[3].text = 'Percent'
-
-        for r in records:
-            row_cells = table.add_row().cells
-            row_cells[0].text = r['LastName'] + ", " + r['FirstName']
-            row_cells[1].text = r['EarnedPts']
-            row_cells[2].text = r['PossiblePts']
-            row_cells[3].text = r['PercentCorrect'] + "%"
+        for c in classes:
+            document.add_heading('Individual Scores for ' + c, 1)
+            table = document.add_table(rows=1, cols=4)
+            table.style = 'Medium Shading 1'
             
-        document.add_page_break()
+            hdr_cells = table.rows[0].cells
+            hdr_cells[0].text = 'Name'
+            hdr_cells[1].text = 'Raw'
+            hdr_cells[2].text = 'Possible'
+            hdr_cells[3].text = 'Percent'
+
+            for r in records:
+                if c == r['QuizClass']:
+                    row_cells = table.add_row().cells
+                    row_cells[0].text = r['LastName'] + ", " + r['FirstName']
+                    row_cells[1].text = r['EarnedPts']
+                    row_cells[2].text = r['PossiblePts']
+                    row_cells[3].text = r['PercentCorrect'] + "%"
+                
+            document.add_page_break()
 
     def make_individual_report(self, record, document):
         '''
@@ -334,6 +346,7 @@ class ZipGradeReporter:
         earned = record['EarnedPts']
         possible = record['PossiblePts']
         percent = record['PercentCorrect']
+        key = record['KeyVersion']
 
         num_questions = int((len(record) - 12) / 4) # 12 metadata colums, 4 data cells per answer
 
@@ -369,6 +382,8 @@ class ZipGradeReporter:
         paragraph.add_run(last + ", " + first + "\n\n").bold = True
         paragraph.add_run("ID: " + zip_id + "\n")
         paragraph.add_run("Test: " + title + "\n")
+        if len(key) > 0:
+            paragraph.add_run("Key: " + key + "\n")
         paragraph.add_run("Class: " + section + "\n")
         paragraph.add_run("Raw: " + earned + "/" + possible + "\n")
         paragraph.add_run("Percent: " +  percent + "%\n")
