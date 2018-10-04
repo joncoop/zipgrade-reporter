@@ -472,6 +472,13 @@ class ZipGradeReporter:
         except:
             self.status_lbl_text.set("Unable to save report. Check file and disk permissions.")
 
+    def make_student_report_cover(self, class_name, document):
+        paragraph = document.add_paragraph()
+        paragraph.add_run('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+        heading = document.add_heading('Individual student Reports for\n' + class_name, 1)
+        heading.alignment = 1
+        document.add_page_break()
+        
     def generate(self):
         '''
         Creates Word Doc with individual score reports.
@@ -491,8 +498,7 @@ class ZipGradeReporter:
                 
                 for i, c in enumerate(classes):
                     if c != '':
-                        document.add_heading('Student Reports for ' + c, 1)
-                        document.add_page_break()
+                        self.make_student_report_cover(c, document)
                         
                     for r in records:
                         if c == r['QuizClass']:
