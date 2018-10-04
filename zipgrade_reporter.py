@@ -6,7 +6,292 @@ import statistics
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
-class ZipGradeReporter:
+
+class Scoresheet:
+    def __init__(self, header_row, data_row, delimiter=","):
+        """
+        header_row is the top row of the ZipGrade csv export file.
+        data_row is a single row containing one student's quiz data.
+        """
+
+        fields = header_row.split(delimiter)
+        values = data_row.split(delimiter)
+
+        def strip_quotes(s):
+            if len(s) > 0 and s[0] == '"':
+                s = s[1:]
+            if len(s) > 0 and s[-1] == '"':
+                s = s[:-1]
+
+            return s.strip()
+            
+        values = [strip_quotes(v) for v in values]        
+        data = {}
+        
+        for f, d in zip(fields, values):
+            data[f] = d
+
+        self.quiz_name = data['QuizName']
+        self.class_name = data['QuizClass']
+        self.first_name = data['FirstName']
+        self.last_name = data['LastName']
+        self.zip_id = data['ZipGradeID']
+        self.external_id = data['ExternalID'] # unused
+        self.earned_points = data['EarnedPts']
+        self.possible_points = data['PossiblePts']
+        self.percent_correct = data['PercentCorrect']
+        self.date_created = data['QuizCreated']
+        self.date_exported = data['DataExported']
+        self.key_version = data['KeyVersion']
+        self.num_questions = int((len(fields) - 12) / 4) # 12 metadata colums, 4 data cells per answer
+
+        self.responses = []
+
+        q = 1
+        count = 0
+
+        while count < self.num_questions:
+            k = 'Key' + str(q)
+            s = 'Stu' + str(q)
+            
+            if k in data:
+                student_answer = data[s]
+                correct_answer = data[k]
+                r = {'question': q, 'answer': student_answer, 'correct': correct_answer}
+                self.responses.append(r)
+                count += 1
+
+            q += 1
+
+
+class Report:
+    def __init__(self, scoresheets):
+        self.scoresheets = scoresheets
+        
+    @property
+    def versions(self):
+        result = []
+
+        for s in self.scoresheets:
+            v = s.key_version
+
+            if v not in result:
+                result.append(v)
+
+        result.sort()
+        return result
+    
+    @property
+    def classes(self):
+        result = []
+
+        for s in self.scoresheets:
+            v = s.class_name
+
+            if v not in result:
+                result.append(v)
+
+        result.sort()
+        return result
+    
+    @property
+    def raw_scores(self):
+        result = []
+        
+        for s in self.scoresheets:
+            n = float(s.earned_points)
+            result.append(n)
+
+        return result
+
+    @property
+    def percentages(self):
+        result = []
+        
+        for s in self.scoresheets:
+            n = float(s.percent_correct)
+            result.append(n)
+
+        return result
+    
+    def quartiles(self, num_list):
+        nums = num_list.copy()
+        nums.sort()
+
+        mid1 = len(nums) // 2
+        mid2 = mid1
+        
+        if len(nums) % 2 == 1:
+            mid2 += 1
+            
+        q1 = round(statistics.median(nums[:mid1]), 2)
+        q3 = round(statistics.median(nums[mid2:]), 2)
+
+        return q1, q3 
+    
+    def add_report_title(self, document):
+        sheet_1 = self.scoresheets[0]
+        title = sheet_1.quiz_name
+
+        document.add_heading('ZipGrade Score Report', 0)
+        document.add_heading(title, 1)
+
+    def add_meta_data(self, document):
+        sheet_1 = self.scoresheets[0]
+
+        p = document.add_paragraph()
+        p.add_run("Date Created: ")
+        p.add_run(sheet_1.date_created + "\n")
+        p.add_run("Date Exported: ")
+        p.add_run(sheet_1.date_exported)
+
+        p = document.add_paragraph()
+        p.add_run("Classes: " + "\n")
+        for class_name in self.classes:
+            p.add_run("  - " + class_name + "\n")
+            
+    def add_summary_statistics(self, document):
+        sheet_1 = self.scoresheets[0]
+        possible_points = sheet_1.possible_points
+        num_scores = len(self.scoresheets)
+
+        mean_raw = round(statistics.mean(self.raw_scores), 2)
+        mean_pct = round(statistics.mean(self.percentages), 2)
+        
+        median_raw = round(statistics.median(self.percentages), 2)
+        median_pct = round(statistics.median(self.percentages), 2)
+        
+        st_dev_raw = round(statistics.mean(self.raw_scores), 2)
+        st_dev_pct = round(statistics.mean(self.percentages), 2)
+
+        min_raw = round(min(self.raw_scores), 2)
+        max_raw = round(max(self.raw_scores), 2)
+        min_pct = round(min(self.percentages), 2)
+        max_pct =  round(max(self.percentages), 2)
+        
+        q1_raw, q3_raw = self.quartiles(self.raw_scores)
+        q1_pct, q3_pct = self.quartiles(self.percentages)
+        
+        document.add_heading('Summary Statistics', 1)
+
+        p = document.add_paragraph()
+        p.add_run("Number of Scores: ")
+        p.add_run(str(num_scores) + "\n")
+        p.add_run("Points Possible: ")
+        p.add_run(str(possible_points))
+        
+        p = document.add_paragraph()
+        p.add_run("Mean (raw/percent): ")
+        p.add_run(str(mean_raw) + " / " + str(mean_pct) + "%\n")
+        p.add_run("Standard Deviation (raw/percent): ")
+        p.add_run(str(st_dev_raw) + " / " + str(st_dev_pct) + "%")
+        
+        p = document.add_paragraph()
+        p.add_run("Max (raw/percent): ")
+        p.add_run(str(max_raw) + " / " + str(max_pct) + "%\n")
+        p.add_run("Q3 (raw/percent): ")
+        p.add_run(str(q3_raw) + " / " + str(q3_pct) + "%\n")
+        p.add_run("Median (raw/percent): ")
+        p.add_run(str(median_raw) + " / " + str(median_pct) + "%\n")
+        p.add_run("Q1 (raw/percent): ")
+        p.add_run(str(q1_raw) + " / " + str(q1_pct) + "%\n")
+        p.add_run("Min (raw/percent): ")
+        p.add_run(str(min_raw) + " / " + str(min_pct) + "%")
+
+    def add_individual_report(self, document, sheet):
+        paragraph = document.add_paragraph()
+        paragraph.paragraph_format.keep_together = True
+            
+        paragraph.add_run(sheet.last_name + ", " + sheet.first_name + "\n\n").bold = True
+        paragraph.add_run("ID: " + sheet.zip_id + "\n")
+        paragraph.add_run("Test: " + sheet.quiz_name + "\n")
+        if len(sheet.key_version) > 0:
+            paragraph.add_run("Key: " + sheet.key_version + "\n")
+        paragraph.add_run("Class: " + sheet.class_name + "\n")
+        paragraph.add_run("Raw: " + sheet.earned_points + "/" + sheet.possible_points + "\n")
+        paragraph.add_run("Percent: " +  sheet.percent_correct + "%\n")
+        paragraph.add_run("Response Summary: (Correct)\n")
+
+        count = 0
+        paragraph.add_run('\t')
+
+        ######### DO THIS AS A TABLE! NO TABS! #########
+        for r in sheet.responses:
+            q = str(r['question'])
+            a = str(r['answer'])
+            c = str(r['correct'])
+
+            item = q + ". " + a
+            if a != c:
+                item += " (" + c + ")\t"
+            else:
+                item += '\t\t'
+                
+            paragraph.add_run(item)
+
+            count += 1
+            if count % 5 == 0:
+               paragraph.add_run('\n\t')
+            
+        paragraph.add_run("\n")
+        
+    def save(self, document, path=None):
+        document.save(path)
+        
+    def generate(self, save_path):
+        document = docx.Document()
+
+        # cover page
+        self.add_report_title(document)
+        self.add_meta_data(document)
+        self.add_summary_statistics(document)
+        document.add_page_break()
+        # difficulty analysis
+        
+        # class reports
+
+        # individual reports
+        for s in self.scoresheets:
+            self.add_individual_report(document, s)
+            
+        # save (or maybe return document and save there)
+        self.save(document, save_path)
+        
+csv_file_path = '../APCSPTest12Export.csv'
+
+with open(csv_file_path) as f:
+    lines = f.readlines()
+
+header = lines[0]
+row = lines[1]
+
+sheet_1 = Scoresheet(header, row)
+
+print(sheet_1.quiz_name)
+
+for r in sheet_1.responses:
+    print(r)
+
+all_sheets = []
+
+for line in lines[1:]:
+    sheet = Scoresheet(header, line)
+    all_sheets.append(sheet)
+
+r = Report(all_sheets)
+
+print(r.versions)
+print(r.classes)
+
+save_path = "C:\\Users\\jccooper\\Desktop\\ZipGrade Reporter\\test.docx"
+r.generate(save_path)
+
+
+
+
+
+"""  
+class App:
     def __init__(self, master):
         self.import_path = None
         self.export_path = None
@@ -124,145 +409,6 @@ class ZipGradeReporter:
                 underscore = True
             
         return filename  + ".docx"
-    
-    def csv_to_json(self, path):
-        '''
-        Reads ZipGrade csv export file and stores as JSON data
-        '''
-        
-        with open(path, 'r') as f:
-            contents = f.read().splitlines()
-
-        fields = contents[0].split(',')
-        records = []
-
-        for line in contents[1:]:
-            r = {}
-            values = line.split(',')
-            
-            for field, value in zip(fields, values):
-                r[field] = value.replace('"','')
-
-            records.append(r)
-
-        #pretty = json.dumps(records, indent=4, sort_keys=False)
-        #print(pretty)
-
-        sort_by = lambda k: k['LastName'] + " " + k['FirstName']
-        records = sorted(records, key=sort_by , reverse=False)
-        
-        return records
-
-    def get_raw_scores(self, records):
-        '''
-        Returns a list of raw scores for each student.
-        '''
-        scores = []
-
-        for r in records:
-            scores.append(int(float(r['EarnedPts'])))
-            
-        return scores
-            
-    def get_percentages(self, records):
-        '''
-        Calculates the percent correct for each student.
-        '''
-
-        scores = []
-
-        for r in records:
-            s = float(r['PercentCorrect'])
-            scores.append(s)
-            
-        return scores
-
-    def make_meta_data(self, records, document):
-        '''
-        Adds meta data to report
-        '''
-
-        r = records[0]
-        date_created = r['QuizCreated']
-        date_exported = r['DataExported']
-        classes = self.get_classes(records)
-
-        p = document.add_paragraph()
-        p.add_run("Date Created: ")
-        p.add_run(date_created + "\n")
-        p.add_run("Date Exported: ")
-        p.add_run(date_exported)
-
-        p = document.add_paragraph()
-        p.add_run("Classes: " + "\n")
-        for c in classes:
-            p.add_run("  - " + c + "\n")
-
-    def make_summary_statistics(self, records, document):
-        '''
-        Adds a section to report with basic summary statistics.
-        '''
-        
-        r = records[0]
-        possible_points = records[0]['PossiblePts']
-        num_scores = len(records)
-        
-        scores = self.get_raw_scores(records)
-        percentages = self.get_percentages(records)
-
-        scores.sort()
-        percentages.sort()
-        
-        document.add_heading('Summary Statistics', 1)
-
-        p = document.add_paragraph()
-        p.add_run("Number of Scores: ")
-        p.add_run(str(num_scores) + "\n")
-        p.add_run("Points Possible: ")
-        p.add_run(str(possible_points))
-
-        mean_raw = round(statistics.mean(scores), 2)
-        max_raw = round(max(scores), 2)
-        min_raw = round(min(scores), 2)
-        median_raw = round(statistics.median(scores), 2)
-
-        mean_percent = round(statistics.mean(percentages), 2)
-        median_percent = round(statistics.median(percentages), 2)
-        max_percent = round(max(percentages), 2)
-        min_percent = round(min(percentages), 2)
-
-        st_dev_raw = round(statistics.stdev(scores), 2)
-        st_dev_percent = round(statistics.stdev(percentages), 2)
-        
-        mid1 = len(scores) // 2
-        mid2 = mid1
-        
-        if len(scores) % 2 == 1:
-            mid2 += 1  
-        
-        q1_raw = round(statistics.median(scores[0:mid1]), 2)
-        q1_percent = round(statistics.median(percentages[0:mid1]), 2)
-
-        q3_raw = round(statistics.median(scores[mid2:]), 2)
-        q3_percent = round(statistics.median(percentages[mid2:]), 2)
-        
-        p = document.add_paragraph()
-        p.add_run("Mean (raw/percent): ")
-        p.add_run(str(mean_raw) + " / " + str(mean_percent) + "%\n")
-        p.add_run("Standard Deviation (raw/percent): ")
-        p.add_run(str(st_dev_raw) + " / " + str(st_dev_percent) + "%")
-        
-        p = document.add_paragraph()
-        p.add_run("Max (raw/percent): ")
-        p.add_run(str(max_raw) + " / " + str(max_percent) + "%\n")
-        p.add_run("Q3 (raw/percent): ")
-        p.add_run(str(q3_raw) + " / " + str(q3_percent) + "%\n")
-        p.add_run("Median (raw/percent): ")
-        p.add_run(str(median_raw) + " / " + str(median_percent) + "%\n")
-        p.add_run("Q1 (raw/percent): ")
-        p.add_run(str(q1_raw) + " / " + str(q1_percent) + "%\n")
-        p.add_run("Min (raw/percent): ")
-        p.add_run(str(min_raw) + " / " + str(min_percent) + "%")
         
     def make_difficulty_analysis(self, records, document):
         '''
@@ -331,46 +477,8 @@ class ZipGradeReporter:
                     paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
                     
         document.add_page_break()
-                                   
-    def make_cover_page(self, records, document):
-        '''
-        Creates cover page with summary statistics.
-        '''
-        r = records[0]
-        title = r['QuizName']
-
-        document.add_heading('ZipGrade Score Report', 0)
-        document.add_heading(title, 1)
+                                           
         
-        self.make_meta_data(records, document)
-        self.make_summary_statistics(records, document)
-        
-        
-        document.add_page_break()
-
-    def get_classes(self, records):
-        classes = []
-        
-        for r in records:
-            c = r['QuizClass']
-            
-            if c not in classes:
-                classes.append(c)
-
-        classes.sort()
-        return classes
-    
-    def get_versions(self, records):
-        versions = []
-        
-        for r in records:
-            v = r['KeyVersion']
-            
-            if v not in versions:
-                versions.append(v)
-
-        versions.sort()
-        return versions
     
     def make_score_summary(self, records, document):
         '''
@@ -403,63 +511,7 @@ class ZipGradeReporter:
                 
             document.add_page_break()
 
-    def make_individual_report(self, record, document):
-        '''
-        Creates report for a student
-        '''
-        
-        title = record['QuizName']
-        section = record['QuizClass']
-        last = record['LastName']
-        first = record['FirstName']
-        zip_id = record['ZipGradeID']
-        earned = record['EarnedPts']
-        possible = record['PossiblePts']
-        percent = record['PercentCorrect']
-        key = record['KeyVersion']
 
-        num_questions = int((len(record) - 12) / 4) # 12 metadata colums, 4 data cells per answer
-
-        result = ""
-        wrong = ""
-        num_wrong = 0
-        for i in range(1, num_questions + 1):
-            correct = record['Key' + str(i)]
-
-            if len(correct) > 0:
-                answer = record['Stu' + str(i)]
-
-                if len(answer) == 0:
-                    answer = "-"
-                    
-                num_wrong += 1
-                wrong += "\t" + str(i) + ". " + answer
-
-                if answer != correct:
-                    wrong += " (" + correct + ")"
-
-                    if i < 10:
-                        wrong += "\t"
-                else:
-                    wrong += "\t"
-                
-                if num_wrong % 5 == 0:
-                    wrong += "\n"
-            
-        paragraph = document.add_paragraph()
-        paragraph.paragraph_format.keep_together = True
-            
-        paragraph.add_run(last + ", " + first + "\n\n").bold = True
-        paragraph.add_run("ID: " + zip_id + "\n")
-        paragraph.add_run("Test: " + title + "\n")
-        if len(key) > 0:
-            paragraph.add_run("Key: " + key + "\n")
-        paragraph.add_run("Class: " + section + "\n")
-        paragraph.add_run("Raw: " + earned + "/" + possible + "\n")
-        paragraph.add_run("Percent: " +  percent + "%\n")
-        paragraph.add_run("Response Summary: (Correct)\n")
-        paragraph.add_run(wrong + "\n")
-        paragraph.add_run("\n")
 
     def save(self, document, records):
         '''
@@ -520,5 +572,6 @@ class ZipGradeReporter:
 
 root = Tk()
 #root.iconbitmap('assets/my_icon.ico')
-my_gui = ZipGradeReporter(root)
+my_gui = App(root)
 root.mainloop()
+"""
