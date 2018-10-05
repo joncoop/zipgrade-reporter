@@ -6,6 +6,7 @@ import statistics
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
+software_version = 'v.0.9-beta.4'
 
 class Scoresheet:
     def __init__(self, header_row, data_row, delimiter=","):
@@ -416,6 +417,10 @@ class App:
         status_lbl = Label(self.master, textvariable=self.status_lbl_text)
         status_lbl.grid(row=7, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
 
+        version = Label(self.master, text=software_version)
+        version.grid(row=8, column=0, columnspan=2, padx=5, pady=5, sticky=(E))
+        
+
     def select_file(self):
         '''
         Gets path to ZipGrade data file and sets export path to same directory.
@@ -517,7 +522,7 @@ class App:
                 generated = True
                 
             except Exception as inst:
-                print(inst)
+                #print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
             if generated:
