@@ -69,7 +69,6 @@ class Report:
         self.scoresheets = scoresheets
 
         sort_by = lambda k: k.last_name + " " + k.first_name
-        print(sort_by)
         self.scoresheets = sorted(self.scoresheets, key=sort_by)
         
     @property
@@ -502,7 +501,7 @@ class App:
         generated = False
         
         if self.import_path != None:
-                #try:
+            try:
                 with open(self.import_path) as f:
                     lines = f.readlines()
 
@@ -514,41 +513,19 @@ class App:
                     all_sheets.append(sheet)
 
                 r = Report(all_sheets)
-                self.save_path = self.export_path + '/' + self.get_export_filename(all_sheets[0])
-                
                 document = r.generate()
+                generated = True
                 
-                    
-                #except Exception as inst:
-                #print(inst)
+            except Exception as inst:
+                print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
-                #if generated:
+            if generated:
+                self.save_path = self.export_path + '/' + self.get_export_filename(all_sheets[0])
                 self.save(document)
         else:
             self.status_lbl_text.set("You must select a file first!")
 
-"""    
-csv_file_path = '../APCSPTest12Export.csv'
-
-with open(csv_file_path) as f:
-    lines = f.readlines()
-
-header = lines[0]
-
-all_sheets = []
-
-for line in lines[1:]:
-    sheet = Scoresheet(header, line)
-    all_sheets.append(sheet)
-
-r = Report(all_sheets)
-
-save_path = "C:\\Users\\jccooper\\Desktop\\ZipGrade Reporter\\test.docx"
-r.generate(save_path)
-
-print("done!")
-"""
 
 root = Tk()
 #root.iconbitmap('assets/my_icon.ico')
