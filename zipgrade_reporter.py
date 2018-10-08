@@ -304,11 +304,16 @@ class Report:
         paragraph = document.add_paragraph()
         paragraph.paragraph_format.keep_together = True
         tab_stops = paragraph.paragraph_format.tab_stops
-        tab_stops.add_tab_stop(Inches(0.5))
-        tab_stops.add_tab_stop(Inches(1.5))
-        tab_stops.add_tab_stop(Inches(2.5))
-        tab_stops.add_tab_stop(Inches(3.5))
-        tab_stops.add_tab_stop(Inches(4.5))
+        tab_stops.add_tab_stop(Inches(0.5))
+
+        tab_stops.add_tab_stop(Inches(1.5))
+
+        tab_stops.add_tab_stop(Inches(2.5))
+
+        tab_stops.add_tab_stop(Inches(3.5))
+
+        tab_stops.add_tab_stop(Inches(4.5))
+
         
         paragraph.add_run(sheet.last_name + ", " + sheet.first_name + "\n\n").bold = True
         paragraph.add_run("ID: " + sheet.zip_id + "\n")
@@ -504,7 +509,7 @@ class App:
         generated = False
         
         if self.import_path != None:
-                #try:
+            try:
                 with open(self.import_path) as f:
                     lines = f.readlines()
 
@@ -519,11 +524,11 @@ class App:
                 document = r.generate()
                 generated = True
                 
-                #except Exception as inst:
+            except Exception as inst:
                 #print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
-                #if generated:
+            if generated:
                 self.save_path = self.export_path + '/' + self.get_export_filename(all_sheets[0])
                 self.save(document)
         else:
