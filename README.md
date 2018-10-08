@@ -2,7 +2,7 @@
 
 ## About
 
-ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade](https://www.zipgrade.com/) and use it to generate small printable reports for students, give more detailed item analysis and test statistics, and provide you with a nice summary of grades and test data which you can save and view without needing access to your phone.
+ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade](https://www.zipgrade.com/) and use it to generate reports in a Microsoft Word format. Reports contain detailed test statistics, score summaries by class, and individual score reports for distribution to students.
 
 Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/raw/master/sample/sample_report.docx).
 
