@@ -3,6 +3,7 @@ import json
 import os
 import statistics
 
+from docx.shared import Inches
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
@@ -221,7 +222,6 @@ class Report:
     def add_difficulty_analysis(self, document, sheets, version):
         document.add_heading('Key version: ' + version, 2)
 
-        # {'question': q, 'answer': student_answer, 'correct': correct_answer}
         misses = {}
         num_questions = sheets[0].num_questions
         
@@ -246,7 +246,6 @@ class Report:
         sort_by = lambda k: k[1]
         difficulty = sorted(difficulty, key=sort_by , reverse=True)
 
-        # better idea to use standard deviations for analysis?
         if len(difficulty) > 10:
             hard_threshold = difficulty[4][2]
             easy_threshold = difficulty[-3][2]
@@ -304,7 +303,13 @@ class Report:
     def add_individual_report(self, document, sheet):
         paragraph = document.add_paragraph()
         paragraph.paragraph_format.keep_together = True
-            
+        tab_stops = paragraph.paragraph_format.tab_stops
+        tab_stops.add_tab_stop(Inches(0.5))
+        tab_stops.add_tab_stop(Inches(1.5))
+        tab_stops.add_tab_stop(Inches(2.5))
+        tab_stops.add_tab_stop(Inches(3.5))
+        tab_stops.add_tab_stop(Inches(4.5))
+        
         paragraph.add_run(sheet.last_name + ", " + sheet.first_name + "\n\n").bold = True
         paragraph.add_run("ID: " + sheet.zip_id + "\n")
         paragraph.add_run("Test: " + sheet.quiz_name + "\n")
@@ -316,31 +321,24 @@ class Report:
         paragraph.add_run("Response Summary: (Correct)\n")
 
         count = 0
-        paragraph.add_run('\t')
-
-        ######### DO THIS AS A TABLE! NO TABS! #########
+        
         for r in sheet.responses:
             q = str(r['question'])
             a = str(r['answer'])
             c = str(r['correct'])
 
-            item = q + ". " + a
+            item = "\t" + q + ". " + a
             if a != c:
-                item += " (" + c + ")\t"
-            else:
-                item += '\t\t'
+                item += " (" + c + ")"
                 
             paragraph.add_run(item)
 
             count += 1
             if count % 5 == 0:
-               paragraph.add_run('\n\t')
+               paragraph.add_run('\n')
             
         paragraph.add_run("\n")
-        
-    def save(self, document, path=None):
-        document.save(path)
-        
+                
     def generate(self):
         document = docx.Document()
 
@@ -506,7 +504,7 @@ class App:
         generated = False
         
         if self.import_path != None:
-            try:
+                #try:
                 with open(self.import_path) as f:
                     lines = f.readlines()
 
@@ -521,11 +519,11 @@ class App:
                 document = r.generate()
                 generated = True
                 
-            except Exception as inst:
+                #except Exception as inst:
                 #print(inst)
                 self.status_lbl_text.set("Something went wrong. Be sure your CSV data file is valid.")
 
-            if generated:
+                #if generated:
                 self.save_path = self.export_path + '/' + self.get_export_filename(all_sheets[0])
                 self.save(document)
         else:
