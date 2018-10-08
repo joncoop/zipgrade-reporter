@@ -305,13 +305,9 @@ class Report:
         paragraph.paragraph_format.keep_together = True
         tab_stops = paragraph.paragraph_format.tab_stops
         tab_stops.add_tab_stop(Inches(0.5))
-
         tab_stops.add_tab_stop(Inches(1.5))
-
         tab_stops.add_tab_stop(Inches(2.5))
-
         tab_stops.add_tab_stop(Inches(3.5))
-
         tab_stops.add_tab_stop(Inches(4.5))
 
         
@@ -332,15 +328,16 @@ class Report:
             a = str(r['answer'])
             c = str(r['correct'])
 
-            item = "\t" + q + ". " + a
-            if a != c:
-                item += " (" + c + ")"
-                
-            paragraph.add_run(item)
+            if len(c) > 0:
+                item = "\t" + q + ". " + a
+                if a != c:
+                    item += " (" + c + ")"
+                    
+                paragraph.add_run(item)
 
-            count += 1
-            if count % 5 == 0:
-               paragraph.add_run('\n')
+                count += 1
+                if count % 5 == 0:
+                   paragraph.add_run('\n')
             
         paragraph.add_run("\n")
                 
