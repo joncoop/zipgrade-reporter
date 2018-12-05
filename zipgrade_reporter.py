@@ -278,8 +278,8 @@ class Report:
         median_raw = round(statistics.median(self.percentages), 2)
         median_pct = round(statistics.median(self.percentages), 2)
 
-        st_dev_raw = round(statistics.mean(self.raw_scores), 2)
-        st_dev_pct = round(statistics.mean(self.percentages), 2)
+        st_dev_raw = round(statistics.stdev(self.raw_scores), 2)
+        st_dev_pct = round(statistics.stdev(self.percentages), 2)
 
         min_raw = round(min(self.raw_scores), 2)
         max_raw = round(max(self.raw_scores), 2)
