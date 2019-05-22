@@ -7,7 +7,7 @@ site_packages = next(p for p in sys.path if 'site-packages' in p)
 block_cipher = None
 
 a = Analysis(['zipgrade_reporter.py'],
-             pathex=['C:\\Users\\jccooper\\Downloads\\zipgrade-reporter-master'],
+             pathex=['C:\\Users\\jccooper\\Desktop\\zipgrade-reporter-master'],
              binaries=[],
              datas=[
                (path.join(site_packages,"docx","templates"), "docx/templates")

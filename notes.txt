@@ -1,5 +1,14 @@
-C:\Program Files (x86)\Python36-32\Lib\site-packages\docx\templates
+Word template is here (icon is messed up)...
+C:\Program Files (x86)\Python37\Lib\site-packages\docx\templates
 
-pyinstaller --onefile zipgrade-reporter.spec
+To make executable...
 
-pyinstaller --onefile --windowed --icon='assets/my_icon.ico' zipgrade-reporter.spec
+1. 
+pyinstaller --onefile zipgrade_reporter.spec
+
+2.
+pyinstaller --onefile --windowed --icon='assets/my_icon.ico' zipgrade_reporter.spec
+
+
+On Windows 10, this needs to be installed for pyinstaller to work...
+https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk

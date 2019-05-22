@@ -1,5 +1,4 @@
-"""Example Google style docstrings.
-
+"""
 ZipGrade Reporter is a tool that can process the CSV Export data from ZipGrade
 and use it to generate reports in a Microsoft Word format. Reports contain
 detailed test statistics, score summaries by class, and individual score reports
@@ -16,12 +15,13 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-software_version = 'v.0.9-beta.4'
+software_version = 'v.0.9-beta.5'
 """str: Version number of this release."""
 
 
 class Scoresheet:
-    """Quiz data for a single student.
+    """
+    Quiz data for a single student.
 
     Scoresheets contain all meta data for a quiz as well as student responses,
     correct answers, and point values for each question.
@@ -44,7 +44,8 @@ class Scoresheet:
     """
 
     def __init__(self, header_row, data_row):
-        """Constructor for a Scoresheet.
+        """
+        Constructor for a Scoresheet.
 
         Args:
             header_row (str): The top row of the ZipGrade CSV export file.
@@ -104,7 +105,8 @@ class Scoresheet:
 
 
 class Report:
-    """Processes multiple ZipGrade scoresheets to create score report.
+    """
+    Processes multiple ZipGrade scoresheets to create score report.
 
     A report uses the scoresheets to calculate summary statistics as well
     as to generate the report as an MS Word document.
@@ -114,7 +116,8 @@ class Report:
     """
 
     def __init__(self, scoresheets):
-        """Constructor for a Report.
+        """
+        Constructor for a Report.
 
         Args:
             scoresheets (list): A list of Scoresheets.
@@ -176,7 +179,8 @@ class Report:
         return result
 
     def get_sheets_by_class(self, class_name):
-        """Gets a list of scoresheets filtered by class.
+        """
+        Gets a list of scoresheets filtered by class.
 
         Args:
             class_name (str): Name of class to get scoresheets for.
@@ -193,7 +197,8 @@ class Report:
         return result
 
     def get_sheets_by_version(self, key_version):
-        """Gets a list of scoresheets filtered by key version.
+        """
+        Gets a list of scoresheets filtered by key version.
 
         Args:
             key_version (str): Version to get scoresheets for.
@@ -210,7 +215,8 @@ class Report:
         return result
 
     def quartiles(self, num_list):
-        """Gets quartiles for a set of values.
+        """
+        Gets quartiles for a set of values.
 
         Args:
             num_list (list): List of numbers to calculate quartiles for.
@@ -232,7 +238,8 @@ class Report:
         return q1, q3
 
     def add_report_title(self, document):
-        """Puts title on report.
+        """
+        Puts title on report.
 
         Args:
             document (docx.Document): Document for which content is being added.
@@ -244,7 +251,8 @@ class Report:
         document.add_heading(title, 1)
 
     def add_meta_data(self, document):
-        """Puts quiz metadata on report.
+        """
+        Puts quiz metadata on report.
 
         Args:
             document (docx.Document): Document for which content is being added.
@@ -263,7 +271,8 @@ class Report:
             p.add_run("  - " + class_name + "\n")
 
     def add_summary_statistics(self, document):
-        """Generates summary statistics and puts them on document.
+        """
+        Generates summary statistics and puts them on document.
 
         Args:
             document (docx.Document): Document for which content is being added.
@@ -316,7 +325,8 @@ class Report:
         p.add_run(str(min_raw) + " / " + str(min_pct) + "%")
 
     def add_difficulty_analysis(self, document, sheets, version):
-        """Generates difficulty analysis and puts it on document.
+        """
+        Generates difficulty analysis and puts it on document.
 
         Args:
             document (docx.Document): Document for which content is being added.
@@ -374,7 +384,8 @@ class Report:
                 paragraph.add_run("\tq=" + q + ", n=" + n + ", %=" + p + "\n")
 
     def add_class_summary(self, document, sheets, summary_title=''):
-        """Generates class and puts it on document.
+        """
+        Generates class and puts it on document.
 
         Class summary is an alphabetized list of students with raw scores and
         percentages.
@@ -404,7 +415,8 @@ class Report:
             row_cells[3].text = s.percent_correct + "%"
 
     def add_individual_report_separator(self, document, class_name):
-        """Generates separator page to put before individual class reports.
+        """
+        Generates separator page to put before individual class reports.
 
         Args:
             document (docx.Document): Document for which content is being added.
@@ -415,7 +427,8 @@ class Report:
         heading.alignment = 1
 
     def add_individual_report(self, document, sheet):
-        """Generates individual score report for document.
+        """
+        Generates individual score report for document.
 
         Individual reports contain student data, scores, and a summary of responses
         along with correct answers.
@@ -464,7 +477,8 @@ class Report:
         paragraph.add_run("\n")
 
     def generate(self):
-        """Creates a ZipGrade report as a Word document.
+        """
+        Creates a ZipGrade report as a Word document.
 
         The report contains a cover page with basic quiz information and
         summary statistics. Subsiquent pages include difficlty analysis, class
@@ -510,7 +524,8 @@ class Report:
 
 
 class App:
-    """GUI component of ZipGrade Reporter.
+    """
+    GUI component of ZipGrade Reporter.
 
     Attributes:
         import_path (str): Path to CSV file.
@@ -528,7 +543,8 @@ class App:
         self.gui_init()
 
     def gui_init(self):
-        """Defines App layout
+        """
+        Defines App layout
         """
         self.master.title("ZipGrade Reporter")
 
@@ -576,14 +592,16 @@ class App:
         self.export_lbl_text.set(self.export_path)
 
     def change_export_path(self):
-        """Sets save path for ZipGrade report.
+        """
+        Sets save path for ZipGrade report.
 
         This feautre is currently unimplemented!
         """
         pass
 
     def get_export_filename(self, sheet):
-        """Gets path to save report.
+        """
+        Gets path to save report.
 
         The report file name is simply the quiz name and the export date. If no
         quiz name exists, then the name will default to grade_report
@@ -629,7 +647,8 @@ class App:
         return filename  + ".docx"
 
     def save(self, document):
-        """Sets save path for ZipGrade report.
+        """
+        Sets save path for ZipGrade report.
 
         Attributes:
             document (docx.Document): Finalized document to save.
@@ -642,7 +661,8 @@ class App:
             self.status_lbl_text.set("Unable to save report. Check file and disk permissions.")
 
     def generate(self):
-        """Reads ZipGrade CSV file and generates report.
+        """
+        Reads ZipGrade CSV file and generates report.
 
         Valid CSV files begin with a single line with all data fields. Each subsiquent
         line contains individual student quiz data.
