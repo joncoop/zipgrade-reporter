@@ -1,3 +1,5 @@
+# ZipGrade Reporter
+
 ## About
 
 ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade](https://www.zipgrade.com/) and use it to generate reports in a Microsoft Word format. Reports contain detailed test statistics, score summaries by class, and individual score reports for distribution to students.
@@ -26,7 +28,7 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Download
 
-[Get v.0.9-beta.4](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.4/ZipGrade.Reporter.exe)
+[Get v.0.9-beta.5](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.5/ZipGrade.Reporter.exe)
 
 ## Contact
 
