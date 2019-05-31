@@ -32,7 +32,7 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Donate
 
-ZipGrade Reporter is free, but if want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url). 
+If want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url). 
 
 <!--
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
