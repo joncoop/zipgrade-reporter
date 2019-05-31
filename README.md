@@ -41,12 +41,12 @@ If want to support future development or just want to say thanks, consider [maki
 </form>
 -->
 
-## Contact
-
-Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
-
 ## Disclaimer
 
 This program is free software. It is provided "as is", without warranty of any kind.
 
 ZipGrade Reporter is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ZipGrade LLC. The official ZipGrade website can be found at [ZipGrade](https://www.zipgrade.com/).
+
+## Contact
+
+Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
