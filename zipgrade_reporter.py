@@ -9,15 +9,21 @@ import docx
 import json
 import os
 import statistics
+import webbrowser
 
 from docx.shared import Inches
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-software_version = 'v.0.9-beta.5'
+software_version = 'v.0.9-beta.6'
 """str: Version number of this release."""
 
+help_url = "https://joncoop.github.io/zipgrade-reporter/"
+"""str: Support website."""
+
+donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url"
+"""str: Paypal donate link."""
 
 class Scoresheet:
     """
@@ -576,10 +582,24 @@ class App:
         status_lbl = Label(self.master, textvariable=self.status_lbl_text)
         status_lbl.grid(row=7, column=0, columnspan=2, padx=5, pady=5, sticky=(W))
 
-        version = Label(self.master, text=software_version)
-        version.grid(row=8, column=0, columnspan=2, padx=5, pady=5, sticky=(E))
+        links = Frame(self.master)
 
+        help_link = Label(links, text="Help", fg="blue", cursor="hand2")
+        help_link.pack( side = LEFT )
+        help_link.bind("<Button-1>", lambda e: webbrowser.open_new(help_url))
 
+        slash = Label(links, text=" / ", fg="gray", cursor="hand2")
+        slash.pack( side = LEFT )
+                
+        donate_link = Label(links, text="Donate", fg="blue", cursor="hand2")
+        donate_link.pack( side = LEFT )
+        donate_link.bind("<Button-1>", lambda e: webbrowser.open_new(donate_url))
+
+        links.grid(row=9, column=0, columnspan=1, padx=5, pady=5, sticky=(W))
+
+        version = Label(self.master, text=software_version, fg="gray")
+        version.grid(row=9, column=1, columnspan=1, padx=5, pady=5, sticky=(E))
+        
     def select_file(self):
         """
         Sets path to ZipGrade data file and sets export path to same directory.
@@ -695,7 +715,9 @@ class App:
             self.status_lbl_text.set("You must select a file first!")
 
 
-root = Tk()
-#root.iconbitmap('assets/my_icon.ico')
-my_gui = App(root)
-root.mainloop()
+# Let's do this!
+if __name__ == "__main__":
+    root = Tk()
+    #root.iconbitmap('assets/my_icon.ico')
+    my_gui = App(root)
+    root.mainloop()
