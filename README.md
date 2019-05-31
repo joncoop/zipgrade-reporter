@@ -30,6 +30,17 @@ Generating the report takes less than a second. The first page contains basic qu
 
 [Get v.0.9-beta.5](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.5/ZipGrade.Reporter.exe)
 
+## Donate
+
+ZipGrade Reporter is free, but if you find it useful and want to support future development, consider making a small donation. Thanks.
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="hidden" name="hosted_button_id" value="XL5ZFUBMT6TJY" />
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+</form>
+
 ## Contact
 
 Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
