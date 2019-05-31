@@ -44,3 +44,5 @@ ZipGrade Reporter is free, but if you find it useful and want to support future 
 ## Contact
 
 Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
+
+\* ZipGrade Reporter is not affiliated with ZipGrade in any way.
