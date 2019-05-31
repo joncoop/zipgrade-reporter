@@ -6,6 +6,10 @@ ZipGrade Reporter is a tool that can process the CSV Export data from [ZipGrade]
 
 Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/raw/master/sample/sample_report.docx).
 
+## Download
+
+[Get v.0.9-beta.5](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.5/ZipGrade.Reporter.exe)
+
 ## How to Use
 
 First, get the quiz data from your phone to your computer.
@@ -25,10 +29,6 @@ First, get the quiz data from your phone to your computer.
 2. Click the "Generate Report" button.
 
 Generating the report takes less than a second. The first page contains basic quiz summary statistics. The next page contains an alphabetized list of student names (if entered) and grades, and the remaining pages contain individual score reports. These pages can easily be cut up and distributed to students to save paper.
-
-## Download
-
-[Get v.0.9-beta.5](https://github.com/joncoop/zipgrade-reporter/releases/download/v.0.9-beta.5/ZipGrade.Reporter.exe)
 
 ## Donate
 
