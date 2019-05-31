@@ -32,7 +32,7 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Donate
 
-ZipGrade Reporter is free, but if you find it useful and want to support future development, consider making a small donation. Thanks.
+ZipGrade Reporter is free, but if want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url). 
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick" />
@@ -45,4 +45,8 @@ ZipGrade Reporter is free, but if you find it useful and want to support future 
 
 Something not working right? Do you have a feature request? You can [view or report issues here](https://github.com/joncoop/zipgrade-reporter/issues).
 
-\* ZipGrade Reporter is not affiliated with ZipGrade in any way.
+## Disclaimer
+
+This program is free software. It is provided "as is", without warranty of any kind.
+
+ZipGrade Reporter is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ZipGrade LLC. The official ZipGrade website can be found at [ZipGrade](https://www.zipgrade.com/).
