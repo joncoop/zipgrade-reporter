@@ -10,7 +10,7 @@ a = Analysis(['zipgrade_reporter.py'],
              pathex=['C:\\Users\\jccooper\\Desktop\\zipgrade-reporter-master'],
              binaries=[],
              datas=[
-               (path.join(site_packages,"docx","templates"), "docx/templates")
+               (path.join(site_packages,'docx','templates'), 'docx/templates'),
              ],
              hiddenimports=[],
              hookspath=[],
@@ -31,4 +31,5 @@ exe = EXE(pyz,
           strip=False,
           upx=True,
           runtime_tmpdir=None,
-          console=False )
+          console=False,
+          version='version.txt')

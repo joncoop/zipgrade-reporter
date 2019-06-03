@@ -16,7 +16,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-software_version = 'v.0.9-beta.6'
+software_version = 'v0.9-beta.6'
 """str: Version number of this release."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
