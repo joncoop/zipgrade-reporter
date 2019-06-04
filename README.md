@@ -6,14 +6,14 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Download
 
-[Get v0.9-beta.7](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.7/ZipGrade.Reporter.exe)
+![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) [Get v0.9-beta.7](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.7/ZipGrade.Reporter.exe)
 
 ## How to Use
 
 First, get the quiz data from your phone to your computer.
 
-![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/screenshots/export.png)
-![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/screenshots/pick_csv.png)
+![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/export.png)
+![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/pick_csv.png)
 
 1. Select Export Data from the quiz menu.
 2. Choose the option "CSV - Full Data Format"
@@ -21,7 +21,7 @@ First, get the quiz data from your phone to your computer.
 4. Save the file locally on your computer.
 5. Run ZipGrade Reporter.
 
-![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/screenshots/ready.png)
+![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/ready.png)
 
 1. Click "Select CSV Data" button and navigate to the CSV data file you exported.
 2. Click the "Generate Report" button.
