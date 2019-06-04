@@ -6,7 +6,7 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Download
 
-[Get v0.9-beta.6](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.6/ZipGrade.Reporter.exe)
+[Get v0.9-beta.7](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.7/ZipGrade.Reporter.exe)
 
 ## How to Use
 
@@ -30,7 +30,7 @@ Generating the report takes less than a second. The first page contains basic qu
 
 ## Donate
 
-If want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url). 
+If want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url).
 
 <!--
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
