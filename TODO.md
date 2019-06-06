@@ -1,6 +1,7 @@
 # To Do
 
 - [x] Fix icon bug in PyInstaller
+- [ ] Add link to open report doc from GUI
 - [ ] Create application icon
 - [ ] Create Mac version
 - [ ] Create Linux version
