@@ -6,11 +6,11 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Download
 
-![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) [Get v0.9-beta.7](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.7/ZipGrade.Reporter.exe)
+![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) [Get v0.9-beta.8](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.8/ZipGrade.Reporter.exe)
 
 ![Mac](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/mac.png) Coming soon
 
-![Linux](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/lin.png) Coming Soon
+<!--![Linux](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/lin.png) Coming Soon-->
 
 ## How to use
 
