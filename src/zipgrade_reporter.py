@@ -16,7 +16,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-software_version = 'v0.9-beta.7'
+software_version = 'v0.9-beta.8'
 """str: Version number of this release."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
@@ -57,11 +57,7 @@ class Scoresheet:
             header_row (str): The top row of the ZipGrade CSV export file.
             data_row (str): A single row containing one student's CSV quiz data.
         """
-
-        delimiter = ","
-        fields = header_row.split(delimiter)
-        values = data_row.split(delimiter)
-
+        
         def remove_quotes(s):
             # Gets rid of quotes around non-numeric CSV data values
             if len(s) > 0 and s[0] == '"':
@@ -70,25 +66,29 @@ class Scoresheet:
                 s = s[:-1]
 
             return s.strip()
-
+        
+        delimiter = ","
+        fields = header_row.split(delimiter)
+        values = data_row.split(delimiter)
         values = [remove_quotes(v) for v in values]
+        
         data = {}
 
-        for f, d in zip(fields, values):
-            data[f] = d
+        for f, v in zip(fields, values):
+            data[f] = v
 
         self.quiz_name = data['QuizName']
         self.class_name = data['QuizClass']
         self.first_name = data['FirstName']
         self.last_name = data['LastName']
-        self.zip_id = data['ZipGradeID']
-        self.external_id = data['ExternalID'] # unused
-        self.earned_points = data['EarnedPts']
-        self.possible_points = data['PossiblePts']
+        self.zip_id = data['StudentID']
+        self.external_id = data['CustomID'] # unused
+        self.earned_points = data['Earned Points']
+        self.possible_points = data['Possible Points']
         self.percent_correct = data['PercentCorrect']
         self.date_created = data['QuizCreated']
         self.date_exported = data['DataExported']
-        self.key_version = data['KeyVersion']
+        self.key_version = data['Key Version']
         self.num_questions = int((len(fields) - 12) / 4) # 12 metadata colums, 4 data cells per answer
 
         self.responses = []
@@ -97,7 +97,7 @@ class Scoresheet:
         count = 0
 
         while count < self.num_questions:
-            k = 'Key' + str(q)
+            k = 'PriKey' + str(q)
             s = 'Stu' + str(q)
 
             if k in data:
@@ -109,7 +109,7 @@ class Scoresheet:
 
             q += 1
 
-
+    
 class Report:
     """
     Processes multiple ZipGrade scoresheets to create score report.
@@ -627,7 +627,9 @@ class App:
         quiz name exists, then the name will default to grade_report
 
         Note:
-            ZipGrade date format: May 02 2018 02:14 PM
+            ZipGrade date format: May 02 2018 02:14 PM (phone)
+                                  2019-09-18 00:00:00       (web)
+
 
         Attributes:
             sheet (Scoresheet): Single scoresheet to extract quiz data from.
@@ -641,10 +643,16 @@ class App:
         if len(title) == 0:
             title = "ZipGradeReport"
 
-        date = sheet.date_exported.split(" ")
-        yyyy = date[2]
-        mm = months[date[0]]
-        dd = date[1]
+        if "-" in sheet.date_exported:
+            date = sheet.date_exported.split("-")
+            yyyy = date[0]
+            mm = date[1]
+            dd = date[2][:2]
+        else:
+            date = sheet.date_exported.split(" ")
+            yyyy = date[2]
+            mm = months[date[0]]
+            dd = date[1]
 
         if int(dd) < 10:
             dd = "0" + dd
@@ -680,6 +688,24 @@ class App:
         except:
             self.status_lbl_text.set("Unable to save report. Check file and disk permissions.")
 
+    def fix_csv(self, header_str):
+        """
+        Replaces mobile app CSV headers with those from CSV file downloaded from
+        ZipGrade website.
+        """
+
+        if 'ZipGradeID' in header_str:
+            header_str = header_str.replace('ZipGradeID', 'StudentID')
+            header_str = header_str.replace('ExternalID', 'CustomID')
+            header_str = header_str.replace('EarnedPts', 'Earned Points')
+            header_str = header_str.replace('PossiblePts', 'Possible Points')
+            header_str = header_str.replace('Key', 'PriKey')
+            header_str = header_str.replace('PriKeyVersion', 'Key Version')
+            header_str = header_str.replace('EarnedPts', 'Earned Points')
+            header_str = header_str.replace('PossPt', 'Mark')
+
+        return header_str
+                    
     def generate(self):
         """
         Reads ZipGrade CSV file and generates report.
@@ -687,6 +713,7 @@ class App:
         Valid CSV files begin with a single line with all data fields. Each subsiquent
         line contains individual student quiz data.
         """
+        
         generated = False
 
         if self.import_path != None:
@@ -695,6 +722,8 @@ class App:
                     lines = f.readlines()
 
                 header = lines[0]
+                header = self.fix_csv(header)
+
                 all_sheets = []
 
                 for line in lines[1:]:
