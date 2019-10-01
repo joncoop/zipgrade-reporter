@@ -43,10 +43,11 @@ Now run ZipGrade Reporter.
 
 Generating the report takes less than a second. The first page contains basic quiz summary statistics. The next page contains an alphabetized list of student names (if entered) and grades, and the remaining pages contain individual score reports. These pages can easily be cut up and distributed to students to save paper.
 
+<!--
 ## Donate
 
 If want to support future development or just want to say thanks, consider [making a small donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url).
-
+-->
 <!--
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick" />
