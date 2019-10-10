@@ -21,7 +21,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 
-software_version = 'v0.9-beta.8'
+software_version = 'v0.9-beta.9'
 """str: Version number of this release."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
@@ -680,7 +680,7 @@ class App:
         months = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04",
                   "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
                   "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
-
+        
         title = sheet.quiz_name.strip()
         if len(title) == 0:
             title = "ZipGradeReport"
@@ -690,14 +690,23 @@ class App:
             yyyy = date[0]
             mm = date[1]
             dd = date[2][:2]
+        elif "/" in sheet.date_exported:
+            date = sheet.date_exported.split("/")
+            yyyy = date[2]
+            mm = date[0]
+            dd = date[1]
         else:
             date = sheet.date_exported.split(" ")
+            print(date)
             yyyy = date[2]
             mm = months[date[0]]
             dd = date[1]
 
         if int(dd) < 10:
             dd = "0" + dd
+            
+        if int(mm) < 10:
+            mm = "0" + mm
 
         temp = title + "_" + "_" + yyyy + mm + dd
         filename = ""
