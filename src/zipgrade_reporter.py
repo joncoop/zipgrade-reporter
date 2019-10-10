@@ -9,6 +9,7 @@ import docx
 import json
 import os
 import statistics
+import sys
 import tempfile
 import webbrowser
 
@@ -20,14 +21,18 @@ from docx.shared import Inches
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
+if getattr(sys, 'frozen', False):
+    application_path = sys._MEIPASS + '/'
+else:
+    application_path = os.path.dirname(__file__) + '/'
 
-software_version = 'v0.9-beta.9'
+software_version = 'v0.9-beta.10'
 """str: Version number of this release."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
 """str: Support website."""
 
-donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url"
+#donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url"
 """str: Paypal donate link."""
 
 class Scoresheet:
@@ -65,6 +70,8 @@ class Scoresheet:
         
         def remove_quotes(s):
             # Gets rid of quotes around non-numeric CSV data values
+            # I really should be using the csv module, but I just learned
+            # that it existed.
             if len(s) > 0 and s[0] == '"':
                 s = s[1:]
             if len(s) > 0 and s[-1] == '"':
@@ -594,7 +601,9 @@ class App:
         """
         Defines App layout
         """
+        self.master.iconbitmap(application_path + 'images/icon.ico')
         self.master.title("ZipGrade Reporter")
+        self.master.resizable(False, False)
 
         select_button = Button(self.master, text="1. Select ZipGrade CSV Data", command=self.select_file)
         select_button.config(width=30)
@@ -630,12 +639,12 @@ class App:
         help_link.pack( side = LEFT )
         help_link.bind("<Button-1>", lambda e: webbrowser.open_new(help_url))
 
-        slash = Label(links, text=" / ", fg="gray", cursor="hand2")
-        slash.pack( side = LEFT )
+        #slash = Label(links, text=" / ", fg="gray", cursor="hand2")
+        #slash.pack( side = LEFT )
                 
-        donate_link = Label(links, text="Donate", fg="blue", cursor="hand2")
-        donate_link.pack( side = LEFT )
-        donate_link.bind("<Button-1>", lambda e: webbrowser.open_new(donate_url))
+        #donate_link = Label(links, text="Donate", fg="blue", cursor="hand2")
+        #donate_link.pack( side = LEFT )
+        #donate_link.bind("<Button-1>", lambda e: webbrowser.open_new(donate_url))
 
         links.grid(row=9, column=0, columnspan=1, padx=5, pady=5, sticky=(W))
 
