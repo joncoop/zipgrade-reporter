@@ -6,7 +6,7 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Download
 
-![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) [Get v0.9-beta.9](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.9/ZipGrade.Reporter.exe)
+![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) [Get v0.9-beta.10](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.exe)
 
 ![Mac](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/mac.png) Coming soon
 
