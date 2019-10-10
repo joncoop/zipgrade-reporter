@@ -9,7 +9,12 @@ import docx
 import json
 import os
 import statistics
+import tempfile
 import webbrowser
+
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
 
 from docx.shared import Inches
 from tkinter import *
@@ -330,6 +335,41 @@ class Report:
         p.add_run("Min (raw/percent): ")
         p.add_run(str(min_raw) + " / " + str(min_pct) + "%")
 
+    def add_grade_distribution_graph(self, document):
+        """
+        Puts bar graph of grade distribution on document.
+
+        Args:
+            document (docx.Document): Document for which content is being added.
+        """
+        ranges = []
+
+        for low in range(0, 100, 5):
+            rng = str(low) + '-' + str(low + 4)
+            ranges.append(rng)
+        ranges.append(100)
+
+        counts = [0] * len(ranges)
+
+        for s in self.scoresheets:
+            percent = round(float(s.percent_correct))
+            index = min(percent // 5, 20)
+            counts[index] += 1
+
+        y_pos = np.arange(len(ranges))
+
+        plt.bar(y_pos, counts, align='center', alpha=0.5)
+        plt.xticks(y_pos, ranges, rotation='vertical')
+        plt.xlabel('Percent correct', labelpad=12)
+        plt.ylabel('Number of students')
+        plt.tight_layout()
+        
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            plt.savefig(tmpdirname + '/graph.png')
+            document.add_heading('Grade Distribution', 1)
+            document.add_picture(tmpdirname + '/graph.png')
+        
+        
     def add_difficulty_analysis(self, document, sheets, version):
         """
         Generates difficulty analysis and puts it on document.
@@ -498,7 +538,9 @@ class Report:
         # cover page
         self.add_report_title(document)
         self.add_meta_data(document)
+        document.add_page_break()
         self.add_summary_statistics(document)
+        self.add_grade_distribution_graph(document)
         document.add_page_break()
 
         # difficulty analysis
