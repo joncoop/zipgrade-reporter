@@ -1,6 +1,8 @@
 # To Do
 
 - [x] Fix icon bug in PyInstaller
+- [x] Make work with web CSV exports
+- [x] Add grade distribution graph
 - [ ] Add link to open report doc from GUI
 - [ ] Create application icon
 - [ ] Create Mac version
