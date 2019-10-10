@@ -10,6 +10,7 @@
 - [ ] Flag possible scanning errors in report
 - [ ] Automatically check for updates
 - [ ] Logging errors in text file if doc can't be generated
+- [ ] Make student reports more compact
 - [ ] Make document formatting prettier
 - [ ] Add checkbox options to GUI for selecting parts of report to create
 - [ ] Add pdf export option
