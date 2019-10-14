@@ -6,8 +6,12 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Downloads
 
+Get v0.9-beta10
+
 ![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) 
-[Get v0.9-beta.10](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.Setup.exe)
+[Self-installing (recommended)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.Setup.exe)
+ / 
+[Standalone (.exe)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.exe)
 
 ![Mac](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/mac.png) Coming soon
 
