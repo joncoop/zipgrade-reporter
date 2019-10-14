@@ -37,7 +37,8 @@ If you want to download the data from the website:
 
  1. Log in to your ZipGrade account.
  2. Go to the 'Quizzes' tab and select the quiz you want.
- 3. Scroll to the 'Quiz Statistics' section. From the 'CSV' dropdown menu, select 'Full Format (with student responses)'.
+ 3. Scroll to the 'Quiz Statistics' section. 
+ 4. From the 'CSV' dropdown menu, select 'Full Format (with student responses)'.
 
 Now run ZipGrade Reporter.
 
