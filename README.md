@@ -21,7 +21,7 @@ Get v0.9-beta10
 
 First, get the quiz data from either your phone or from the ZipGrade website.
 
-#### From your phone, complete the following steps:
+### From your phone, complete the following steps:
 
 ![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/export.png)
 ![Pick CSV](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/pick_csv.png)
@@ -39,7 +39,7 @@ If you want to download the data from the website:
  2. Go to the 'Quizzes' tab and select the quiz you want.
  3. Scroll to the 'Quiz Statistics' section. From the 'CSV' dropdown menu, select 'Full Format (with student responses)'.
 
-#### Now run ZipGrade Reporter.
+### Now run ZipGrade Reporter.
 
 ![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/ready.png)
 
