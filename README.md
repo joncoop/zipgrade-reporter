@@ -19,7 +19,7 @@ Get v0.9-beta10
 
 ## How to use
 
-First, get the quiz data from your phone to your computer. You can get the data from your phone or from the ZipGrade website.
+First, get the quiz data from either your phone or from the ZipGrade website.
 
 From your phone, complete the following steps:
 
@@ -46,7 +46,7 @@ Now run ZipGrade Reporter.
   1. Click "Select CSV Data" button and navigate to the CSV data file you exported.
   2. Click the "Generate Report" button.
 
-Generating the report takes less than a second. The first page contains basic quiz summary statistics. The next page contains an alphabetized list of student names (if entered) and grades, and the remaining pages contain individual score reports. These pages can easily be cut up and distributed to students to save paper.
+Generating the report takes less than a second. The first pages contains basic quiz summary statistics and alphabetized student summaries. The remaining pages contain individual score reports which be cut up and distributed to students to save paper.
 
 <!--
 ## Donate
