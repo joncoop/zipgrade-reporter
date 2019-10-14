@@ -21,30 +21,30 @@ Get v0.9-beta10
 
 First, get the quiz data from either your phone or from the ZipGrade website.
 
-From your phone, complete the following steps:
+#### From your phone, complete the following steps:
 
 ![Choose export](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/export.png)
 ![Pick CSV](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/pick_csv.png)
 
-  1. Select Export Data from the quiz menu.
-  2. Choose the option "CSV - Full Data Format"
-  3. Send the file to yourself (perhaps through email or Google Drive)
-  4. Save the file locally on your computer.
+ 1. Select Export Data from the quiz menu.
+ 2. Choose the option "CSV - Full Data Format"
+ 3. Send the file to yourself (perhaps through email or Google Drive)
+ 4. Save the file locally on your computer.
 
 If you want to download the data from the website:
 
-  ![Pick CSV](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/pick_csv_web.png)
+ ![Pick CSV](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/pick_csv_web.png)
 
-  1. Log in to your ZipGrade account.
-  2. Go to the 'Quizzes' tab and select the quiz you want.
-  3. Scroll to the 'Quiz Statistics' section. From the 'CSV' dropdown menu, select 'Full Format (with student responses)'.
+ 1. Log in to your ZipGrade account.
+ 2. Go to the 'Quizzes' tab and select the quiz you want.
+ 3. Scroll to the 'Quiz Statistics' section. From the 'CSV' dropdown menu, select 'Full Format (with student responses)'.
 
-Now run ZipGrade Reporter.
+#### Now run ZipGrade Reporter.
 
-  ![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/ready.png)
+![Your Report is ready](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/ready.png)
 
-  1. Click "Select CSV Data" button and navigate to the CSV data file you exported.
-  2. Click the "Generate Report" button.
+1. Click "Select CSV Data" button and navigate to the CSV data file you exported.
+2. Click the "Generate Report" button.
 
 Generating the report takes less than a second. The first pages contains basic quiz summary statistics and alphabetized student summaries. The remaining pages contain individual score reports which be cut up and distributed to students to save paper.
 
