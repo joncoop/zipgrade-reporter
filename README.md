@@ -6,7 +6,7 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 
 ## Downloads
 
-Get v0.9-beta10
+Get v0.9-beta.10
 
 ![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) 
 [Self-installing version (recommended)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.Setup.exe)
