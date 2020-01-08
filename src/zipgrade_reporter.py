@@ -18,6 +18,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from docx.shared import Inches
+from docx.shared import Pt
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
@@ -26,7 +27,7 @@ if getattr(sys, 'frozen', False):
 else:
     application_path = os.path.dirname(__file__) + '/'
 
-software_version = 'v0.9-beta.10'
+software_version = 'v0.9-beta.11'
 """str: Version number of this release."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
@@ -453,6 +454,7 @@ class Report:
 
         table = document.add_table(rows=1, cols=4)
         table.style = 'Medium Shading 1'
+        table.cell(0,0).width = Inches(3.0)
 
         hdr_cells = table.rows[0].cells
         hdr_cells[0].text = 'Name'
@@ -491,24 +493,36 @@ class Report:
         """
         paragraph = document.add_paragraph()
         paragraph.paragraph_format.keep_together = True
+        
         tab_stops = paragraph.paragraph_format.tab_stops
-        tab_stops.add_tab_stop(Inches(0.5))
-        tab_stops.add_tab_stop(Inches(1.5))
-        tab_stops.add_tab_stop(Inches(2.5))
-        tab_stops.add_tab_stop(Inches(3.5))
-        tab_stops.add_tab_stop(Inches(4.5))
+        tab_stops.add_tab_stop(Inches(0.2))
+        tab_stops.add_tab_stop(Inches(0.9))
+        tab_stops.add_tab_stop(Inches(1.6))
+        tab_stops.add_tab_stop(Inches(2.3))
+        tab_stops.add_tab_stop(Inches(3.0))
+        tab_stops.add_tab_stop(Inches(3.7))
+        tab_stops.add_tab_stop(Inches(4.4))
+        tab_stops.add_tab_stop(Inches(5.1))
+        tab_stops.add_tab_stop(Inches(5.9))
+        tab_stops.add_tab_stop(Inches(6.6))
 
+        paragraph.add_run(sheet.last_name + ", " + sheet.first_name + " (ID: " + sheet.zip_id + ")\n").bold = True
 
-        paragraph.add_run(sheet.last_name + ", " + sheet.first_name + "\n\n").bold = True
-        paragraph.add_run("ID: " + sheet.zip_id + "\n")
-        paragraph.add_run("Test: " + sheet.quiz_name + "\n")
+        test_name = sheet.quiz_name
         if len(sheet.key_version) > 0:
-            paragraph.add_run("Key: " + sheet.key_version + "\n")
-        paragraph.add_run("Class: " + sheet.class_name + "\n")
-        paragraph.add_run("Raw: " + sheet.earned_points + "/" + sheet.possible_points + "\n")
-        paragraph.add_run("Percent: " +  sheet.percent_correct + "%\n")
-        paragraph.add_run("Response Summary: (Correct)\n")
-
+            test_name += " (Key: " + sheet.key_version + ")"
+            
+        run = paragraph.add_run("Class: " + sheet.class_name + "\n")
+        run.font.size = Pt(9)
+        run = paragraph.add_run("Test: " + test_name + "\n")
+        run.font.size = Pt(9)
+        run = paragraph.add_run("Score: " + sheet.percent_correct + "% " +  
+                                "(" + sheet.earned_points + "/" + sheet.possible_points  + ")\n")
+        run.font.size = Pt(9)
+        
+        run = paragraph.add_run("Response Summary: Your Answer (Correct)\n")
+        run.font.size = Pt(9)
+        
         count = 0
 
         for r in sheet.responses:
@@ -521,14 +535,15 @@ class Report:
                 if a != c:
                     item += " (" + c + ")"
 
-                paragraph.add_run(item)
+                run = paragraph.add_run(item)
+                run.font.size = Pt(9)
 
                 count += 1
-                if count % 5 == 0:
+                if count % 10 == 0:
                    paragraph.add_run('\n')
 
         paragraph.add_run("\n")
-
+        
     def generate(self):
         """
         Creates a ZipGrade report as a Word document.
@@ -542,6 +557,18 @@ class Report:
         """
         document = docx.Document()
 
+        # styling
+        style = document.styles['Normal']
+        font = style.font
+        font.size = Pt(11)
+
+        sections = document.sections
+        for section in sections:
+            section.top_margin = Inches(0.6)
+            section.bottom_margin = Inches(0.6)
+            section.left_margin = Inches(0.6)
+            section.right_margin = Inches(0.6)
+        
         # cover page
         self.add_report_title(document)
         self.add_meta_data(document)
@@ -807,6 +834,5 @@ class App:
 # Let's do this!
 if __name__ == "__main__":
     root = Tk()
-    #root.iconbitmap('assets/my_icon.ico')
     my_gui = App(root)
     root.mainloop()
