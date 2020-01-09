@@ -193,6 +193,7 @@ class Report:
 
         for s in self.scoresheets:
             n = float(s.percent_correct)
+            n = round(n)
             result.append(n)
 
         return result
@@ -459,7 +460,9 @@ class Report:
             row_cells[0].text = s.last_name + ", " + s.first_name
             row_cells[1].text = s.earned_points
             row_cells[2].text = s.possible_points
-            row_cells[3].text = s.percent_correct + "%"
+
+            rounded_percent = round(float(s.percent_correct))
+            row_cells[3].text = str(rounded_percent) + "%"
 
     def add_individual_report_separator(self, document, class_name):
         """
