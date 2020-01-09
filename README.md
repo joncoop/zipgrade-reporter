@@ -9,9 +9,9 @@ Check out a [sample report here](https://github.com/joncoop/zipgrade-reporter/ra
 Get v0.9-beta.10
 
 ![Windows](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/win.png) 
-[Self-installing version (recommended)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.Setup.exe)
+[Self-installing version (recommended)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.11/ZipGrade.Reporter.Setup.exe)
  / 
-[Stand-alone version (.exe)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.10/ZipGrade.Reporter.exe)
+[Stand-alone version (.exe)](https://github.com/joncoop/zipgrade-reporter/releases/download/v0.9-beta.11/ZipGrade.Reporter.exe)
 
 ![Mac](https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/img/mac.png) Coming soon
 
@@ -47,7 +47,7 @@ Now run ZipGrade Reporter.
 1. Click "Select CSV Data" button and navigate to the CSV data file you exported.
 2. Click the "Generate Report" button.
 
-Generating the report takes less than a second. The first pages contains basic quiz summary statistics and alphabetized student summaries. The remaining pages contain individual score reports which be cut up and distributed to students to save paper.
+Generating the report takes less than a second. The first pages contains basic quiz summary statistics and alphabetized student summaries. The remaining pages contain individual score reports which be cut up and distributed to students to save paper. The report will also contain a summary of possible miss-scanned answers.
 
 <!--
 ## Donate
