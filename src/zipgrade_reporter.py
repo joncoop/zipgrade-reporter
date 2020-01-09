@@ -256,29 +256,21 @@ class Report:
 
         return q1, q3
 
-    def add_report_title(self, document):
+    def add_cover_page(self, document):
         """
-        Puts title on report.
+        Puts cover page on the report.
 
         Args:
             document (docx.Document): Document for which content is being added.
         """
+        
         sheet_1 = self.scoresheets[0]
-        title = sheet_1.quiz_name
-
+        
         document.add_heading('ZipGrade Score Report', 0)
-        document.add_heading(title, 1)
-
-    def add_meta_data(self, document):
-        """
-        Puts quiz metadata on report.
-
-        Args:
-            document (docx.Document): Document for which content is being added.
-        """
-        sheet_1 = self.scoresheets[0]
-
+  
         p = document.add_paragraph()
+        p.add_run("Quiz Name: ")
+        p.add_run(sheet_1.quiz_name + "\n")
         p.add_run("Date Created: ")
         p.add_run(sheet_1.date_created + "\n")
         p.add_run("Date Exported: ")
@@ -621,9 +613,10 @@ class Report:
             section.right_margin = Inches(0.6)
         
         # cover page
-        self.add_report_title(document)
-        self.add_meta_data(document)
+        self.add_cover_page(document)
         document.add_page_break()
+
+        # summary statistics
         self.add_summary_statistics(document)
         self.add_grade_distribution_graph(document)
         document.add_page_break()
