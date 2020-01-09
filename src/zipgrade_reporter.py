@@ -506,7 +506,8 @@ class Report:
         tab_stops.add_tab_stop(Inches(5.9))
         tab_stops.add_tab_stop(Inches(6.6))
 
-        paragraph.add_run(sheet.last_name + ", " + sheet.first_name + " (ID: " + sheet.zip_id + ")\n").bold = True
+        name = sheet.last_name + ", " + sheet.first_name
+        paragraph.add_run(name + " (ID: " + sheet.zip_id + ")\n").bold = True
 
         test_name = sheet.quiz_name
         if len(sheet.key_version) > 0:
@@ -524,7 +525,8 @@ class Report:
         run.font.size = Pt(9)
         
         count = 0
-
+        flagged_questions = []
+        
         for r in sheet.responses:
             q = str(r['question'])
             a = str(r['answer'])
@@ -542,8 +544,57 @@ class Report:
                 if count % 10 == 0:
                    paragraph.add_run('\n')
 
-        paragraph.add_run("\n")
+                if len(c) != len(a):
+                    flagged_questions.append(q)
+
+                if len(flagged_questions) == 0:
+                    flagged = "None"
+                else:
+                    flagged = str(flagged_questions)[1: -1]
+                    
+        return name, flagged
         
+    def add_flagged_report_list(self, document, flagged_quizzes):
+        """
+        Generates class and puts it on document.
+
+        Args:
+            document (docx.Document): Document for which content is being added.
+            flagged_quizzes (tuple): Class name, student name, and list of questions with flagged responses
+        """
+        document.add_heading('Flagged Reports', 1)
+
+        if len(flagged_quizzes) > 0:
+            paragraph = document.add_paragraph()
+            paragraph.add_run("Check that the student responses on flagged questions were scanned correctly. " +
+                              "Possible reasons include answers not scanned due light marking, stray marks " +
+                              "considered responses due to poor erasing, and marks not read due to glare or " +
+                              "poor lighting during scanning. Questions inadvertently left blank by students " +
+                              "will also be flagged.")
+            paragraph.add_run("\n\n")
+            
+            paragraph.add_run("From within the ZipGrade app, you can 'Review Papers' and 'Edit Answers' to make " +
+                              "corrections. Then redownload the CSV file and generate this report again.")
+            paragraph.add_run("\n")
+            
+            table = document.add_table(rows=1, cols=3)
+            table.style = 'Medium Shading 1'
+
+            hdr_cells = table.rows[0].cells
+            hdr_cells[0].text = 'Class'
+            hdr_cells[1].text = 'Name'
+            hdr_cells[2].text = 'Flagged Questions'
+
+            for q in flagged_quizzes:
+                row_cells = table.add_row().cells
+                row_cells[0].text = q[0]
+                row_cells[1].text = q[1]
+                row_cells[2].text = q[2]
+        else:
+            paragraph = document.add_paragraph()
+            paragraph.add_run("No quizzes have been flagged. It appears that all answers were scanned correctly.")
+            paragraph.add_run("\n")
+
     def generate(self):
         """
         Creates a ZipGrade report as a Word document.
@@ -591,20 +642,30 @@ class Report:
             document.add_page_break()
 
         # individual reports
+        flagged_quizzes = []
+        
         for i, class_name in enumerate(self.classes):
             sheets = self.get_sheets_by_class(class_name)
             self.add_individual_report_separator(document, class_name)
             document.add_page_break()
 
             for s in sheets:
-                self.add_individual_report(document, s)
+                name, flags = self.add_individual_report(document, s)
+
+                if flags != "None":
+                    flagged_quizzes.append([class_name, name, flags])
 
             if i + 1 < len(self.classes):
                 document.add_page_break()
 
+        document.add_page_break()
+
+        # flagged reports
+        self.add_flagged_report_list(document, flagged_quizzes)
+
+        # all done
         return document
-
-
+         
 class App:
     """
     GUI component of ZipGrade Reporter.
