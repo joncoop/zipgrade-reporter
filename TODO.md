@@ -4,13 +4,13 @@
 - [x] Make work with web CSV exports
 - [x] Add grade distribution graph
 - [ ] Add link to open report doc from GUI
-- [ ] Create application icon
+- [x] Create application icon
 - [ ] Create Mac version
 - [ ] Create Linux version
-- [ ] Flag possible scanning errors in report
+- [x] Flag possible scanning errors in report
 - [ ] Automatically check for updates
 - [ ] Logging errors in text file if doc can't be generated
-- [ ] Make student reports more compact
+- [x] Make student reports more compact
 - [ ] Make document formatting prettier
 - [ ] Add checkbox options to GUI for selecting parts of report to create
 - [ ] Add pdf export option
