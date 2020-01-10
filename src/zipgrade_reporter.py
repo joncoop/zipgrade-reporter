@@ -11,6 +11,7 @@ import os
 import statistics
 import sys
 import tempfile
+import urllib.request
 import webbrowser
 
 import matplotlib.pyplot as plt; plt.rcdefaults()
@@ -27,14 +28,15 @@ if getattr(sys, 'frozen', False):
 else:
     application_path = os.path.dirname(__file__) + '/'
 
-software_version = 'v0.9-beta.11'
+software_version = 'v0.9-beta.12'
 """str: Version number of this release."""
+
+version_url = 'https://raw.githubusercontent.com/joncoop/zipgrade-reporter/master/src/version.txt'
+""" str: URL of version info, used to check if software is up-to-date."""
 
 help_url = "https://joncoop.github.io/zipgrade-reporter/"
 """str: Support website."""
 
-#donate_url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q3DTGDBMK7EJ&source=url"
-"""str: Paypal donate link."""
 
 class Scoresheet:
     """
@@ -723,18 +725,48 @@ class App:
         help_link.pack( side = LEFT )
         help_link.bind("<Button-1>", lambda e: webbrowser.open_new(help_url))
 
-        #slash = Label(links, text=" / ", fg="gray", cursor="hand2")
-        #slash.pack( side = LEFT )
-                
-        #donate_link = Label(links, text="Donate", fg="blue", cursor="hand2")
-        #donate_link.pack( side = LEFT )
-        #donate_link.bind("<Button-1>", lambda e: webbrowser.open_new(donate_url))
+        if not self.is_up_to_date():
+            slash = Label(links, text=" | ", fg="gray", cursor="hand2")
+            slash.pack( side = LEFT )
+                    
+            update_link = Label(links, text="Update ZipGrade Reporter", fg="blue", cursor="hand2")
+            update_link.pack( side = LEFT )
+            update_link.bind("<Button-1>", lambda e: webbrowser.open_new(help_url))
 
         links.grid(row=9, column=0, columnspan=1, padx=5, pady=5, sticky=(W))
 
         version = Label(self.master, text=software_version, fg="gray")
         version.grid(row=9, column=1, columnspan=1, padx=5, pady=5, sticky=(E))
+
+    def is_up_to_date(self):
+        """
+        Checks the ZipGradeReporter website to see if application is latest version.
+
+        Returns:
+            True if up-to-date, False otherwise
+        """
+
+        try:
+            fp = urllib.request.urlopen(version_url)
+            mybytes = fp.read()
+            version_txt = mybytes.decode('utf8')
+            fp.close()
+
+            start_del = "StringStruct(u'FileVersion', u'"
+            end_del = "'),"
+
+            start_loc = version_txt.find(start_del) + len(start_del)
+            end_loc = version_txt.find(end_del, start_loc)
+
+            version = 'v' + version_txt[start_loc: end_loc]
+
+            if version == software_version:
+                return True
+        except:
+            pass
         
+        return False
+    
     def select_file(self):
         """
         Sets path to ZipGrade data file and sets export path to same directory.
