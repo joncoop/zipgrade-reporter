@@ -8,8 +8,8 @@
 - [ ] Create Mac version
 - [ ] Create Linux version
 - [x] Flag possible scanning errors in report
-- [ ] Automatically check for updates
-- [ ] Logging errors in text file if doc can't be generated
+- [x] Automatically check for updates
+- [ ] Log errors in text file if doc can't be generated
 - [x] Make student reports more compact
 - [ ] Make document formatting prettier
 - [ ] Add checkbox options to GUI for selecting parts of report to create
