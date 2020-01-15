@@ -19,7 +19,7 @@ Get v0.9-beta.12
 
 ## How to use
 
-First, get the quiz data from either your phone or from the ZipGrade website.
+First, get the quiz data from either your phone or the ZipGrade website.
 
 From your phone, complete the following steps:
 
